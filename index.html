@@ -570,7 +570,7 @@ const RECENT_TX = [
 let globalLoss = {1: 24, 2: 48, 3: 13};
 
 function apiCall(payload){
-  if(!SCRIPT_URL || SCRIPT_URL.includes("ĐIỀN")) return;
+  if(!SCRIPT_URL || SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbzPVSE0nvgNKdTowZxtYPH6lZRPHdq47vWUN9k6pQ3oNNnzpXTLKy2qqmq06vuvrAz_-g/exec")) return;
   fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)}).catch(e=>console.log(e));
 }
 
