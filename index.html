@@ -533,7 +533,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9eKPlUu_v_E0811eIlyp2F42C1qOAtvO_Nskz56Yj167FkL0E98XyO1T1r3I11w6G/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPVSE0nvgNKdTowZxtYPH6lZRPHdq47vWUN9k6pQ3oNNnzpXTLKy2qqmq06vuvrAz_-g/exec";
 
 // Khai báo mảng tên trang để xử lý chuyển tab
 const pages = ["pg-home", "pg-nhap", "pg-haohut", "pg-nv", "pg-kh", "pg-lo"];
@@ -569,9 +569,26 @@ const RECENT_TX = [
 
 let globalLoss = {1: 24, 2: 48, 3: 13};
 
-function apiCall(payload){
-  if(!SCRIPT_URL || SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbzPVSE0nvgNKdTowZxtYPH6lZRPHdq47vWUN9k6pQ3oNNnzpXTLKy2qqmq06vuvrAz_-g/exec")) return;
-  fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)}).catch(e=>console.log(e));
+function apiCall(payload) {
+  if (!SCRIPT_URL || SCRIPT_URL.includes("ĐIỀN")) return;
+  
+  // Chuyển sang dùng cấu trúc fetch chuẩn không có no-cors để bắt lỗi
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  })
+  .then(response => response.json())
+  .then(res => {
+    if (res.status === "success") {
+      console.log("Dữ liệu đã đồng bộ vào Google Sheets thành công!");
+    } else {
+      console.error("Lỗi từ hệ thống Sheets:", res.error);
+      showToast("⚠️ Lỗi Sheets: " + res.error, "var(--red)");
+    }
+  })
+  .catch(e => {
+    console.error("Lỗi đường truyền mạng:", e);
+  });
 }
 
 function updateKPIAndLossUI() {
