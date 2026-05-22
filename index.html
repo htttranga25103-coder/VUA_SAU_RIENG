@@ -212,8 +212,8 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   <div class="hdr-brand">
     <span class="hdr-icon">🌳</span>
     <div>
-      <div class="hdr-name">Vựa Sầu Riêng Cô Huyền</div>
-      <div class="hdr-sub">Quản lý vựa</div>
+      <div class="hdr-name">Vựa Sầu Riêng</div>
+      <div class="hdr-sub">Hệ thống quản lý ngầm</div>
     </div>
   </div>
   <div class="hdr-right">
@@ -230,22 +230,22 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
     <div class="kgrid">
       <div class="kcard c-gold">
         <div class="k-lbl">Doanh Thu</div>
-        <div class="k-val gold">92.4 <span style="font-size:14px">tr</span></div>
+        <div class="k-val gold" id="kpi-dt">92.4 <span style="font-size:14px">tr</span></div>
         <div class="k-trend up">▲ +12% so hôm qua</div>
       </div>
       <div class="kcard c-green">
         <div class="k-lbl">Sản Lượng Bán</div>
-        <div class="k-val green">1,155 <span style="font-size:14px">kg</span></div>
+        <div class="k-val green" id="kpi-sl">1,155 <span style="font-size:14px">kg</span></div>
         <div class="k-unit">Kho còn: 245 kg</div>
       </div>
       <div class="kcard c-red">
         <div class="k-lbl">Nợ Chưa Thu</div>
-        <div class="k-val red">10.5 <span style="font-size:14px">tr</span></div>
-        <div class="k-trend dn">⚠️ 3 khách quá hạn</div>
+        <div class="k-val red" id="kpi-no">10.5 <span style="font-size:14px">tr</span></div>
+        <div class="k-trend dn">⚠️ Cập nhật từ danh sách</div>
       </div>
       <div class="kcard c-orange">
         <div class="k-lbl">Hao Hụt / Lỗi</div>
-        <div class="k-val orange">85 <span style="font-size:14px">kg</span></div>
+        <div class="k-val orange" id="kpi-hh">85 <span style="font-size:14px">kg</span></div>
         <div class="k-unit">Tỷ lệ: 6.8% (Cao)</div>
       </div>
     </div>
@@ -324,9 +324,15 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
           </div>
         </div>
 
-        <div class="frow">
-          <label class="flbl">💵 Giá Bán / KG (đồng)</label>
-          <input class="finput" id="f-gia" type="number" oninput="calcTotal()">
+        <div class="fgrid">
+          <div class="frow">
+            <label class="flbl">💵 Giá Bán / KG (đồng)</label>
+            <input class="finput" id="f-gia" type="number" oninput="calcTotal()">
+          </div>
+          <div class="frow">
+            <label class="flbl">🔴 Ghi Nợ Đơn Này (triệu đ)</label>
+            <input class="finput" id="f-debt" type="number" placeholder="0 nếu trả hết">
+          </div>
         </div>
 
         <div class="frow">
@@ -362,6 +368,10 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
     <div class="sec" style="margin-top:20px;">
       <div class="sec-ttl" style="margin-bottom:12px">🍂 Ghi Nhận Hao Hụt Nhanh</div>
       <div class="fcard">
+        <div class="frow">
+          <label class="flbl">📦 Hao Hụt Thuộc Lô Nào?</label>
+          <select class="fsel" id="l-lot-select"></select>
+        </div>
         <div class="fgrid">
           <div class="frow">
             <label class="flbl">📋 Loại Thất Thoát</label>
@@ -397,17 +407,17 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
         </div>
         <div class="lrow">
           <div><div class="lr-name">🥇 Loại 1</div><div class="lr-sub">Ri6 tuyển</div></div>
-          <div class="lr-c">500</div><div class="lr-c">24</div>
+          <div class="lr-c">500</div><div class="lr-c" id="loss-l1">24</div>
           <div class="lr-c"><span class="lpct ok">4.8%</span></div>
         </div>
         <div class="lrow">
           <div><div class="lr-name">🥈 Loại 2</div><div class="lr-sub">Hàng xô khá</div></div>
-          <div class="lr-c">600</div><div class="lr-c">48</div>
+          <div class="lr-c">600</div><div class="lr-c" id="loss-l2">48</div>
           <div class="lr-c"><span class="lpct warn">8.0%</span></div>
         </div>
         <div class="lrow">
           <div><div class="lr-name">🥉 Loại 3</div><div class="lr-sub">Hàng dạt kem</div></div>
-          <div class="lr-c">200</div><div class="lr-c">13</div>
+          <div class="lr-c">200</div><div class="lr-c" id="loss-l3">13</div>
           <div class="lr-c"><span class="lpct bad">6.5%</span></div>
         </div>
       </div>
@@ -461,6 +471,10 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
     <div class="frow">
       <label class="flbl">Số điện thoại</label>
       <input class="finput" id="c-phone" placeholder="Nhập số liên hệ...">
+    </div>
+    <div class="frow">
+      <label class="flbl">🔴 Số tiền nợ gối đầu cũ (triệu đ)</label>
+      <input class="finput" id="c-debt" type="number" placeholder="Ví dụ: 2.5">
     </div>
     <div class="frow">
       <label class="flbl">Phân nhóm khách</label>
@@ -519,17 +533,14 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9eKPlUu_v_E0811eIlyp2F42C1qOAtvO_Nskz56Yj167FkL0E98XyO1T1r3I11w6G/exec"; // Link script ngầm của bạn nếu có
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9eKPlUu_v_E0811eIlyp2F42C1qOAtvO_Nskz56Yj167FkL0E98XyO1T1r3I11w6G/exec";
 
-// ── VÙNG DATA ──
 const LOTS = [
   {id:'A',name:'Lô A — Ri6 (22/5)',kg:500,sold:380,voc:{1:65000,2:52000,3:38000},san:{1:85000,2:72000,3:55000},open:true},
   {id:'B',name:'Lô B — Musang (18/5)',kg:300,sold:295,voc:{1:58000,2:46000,3:34000},san:{1:78000,2:65000,3:50000},open:false},
 ];
 let selLot = LOTS[0];
 let sellType = 'le'; 
-
-const ORDERS = [];
 
 const EMPLOYEES = [
   {name:'Minh',kg:450,avgPrice:87000,ref:85000,anomalies:0,status:'ok'},
@@ -553,13 +564,32 @@ const RECENT_TX = [
   {khach:'Anh Tâm (sỉ)',kg:80,loai:1,gia:58000,nv:'Tuấn',time:'10:05',ok:false},
 ];
 
-// ── HÀM ĐẨY SƠ LÊN GG SHEET NGOẠI VI ──
+let globalLoss = {1: 24, 2: 48, 3: 13};
+
 function apiCall(payload){
   if(!SCRIPT_URL || SCRIPT_URL.includes("ĐIỀN")) return;
   fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)}).catch(e=>console.log(e));
 }
 
-// ── CORE FUNCTIONS CHUẨN GIAO DIỆN GỐC (.tx-row, .lot-card) ──
+function updateKPIAndLossUI() {
+  let totalDebt = 0;
+  CUSTOMERS.forEach(c => totalDebt += c.debt);
+  document.getElementById('kpi-no').innerHTML = `${totalDebt.toFixed(1)} <span style="font-size:14px">tr</span>`;
+  
+  if(document.getElementById('loss-l1')) document.getElementById('loss-l1').textContent = globalLoss[1];
+  if(document.getElementById('loss-l2')) document.getElementById('loss-l2').textContent = globalLoss[2];
+  if(document.getElementById('loss-l3')) document.getElementById('loss-l3').textContent = globalLoss[3];
+  
+  let totalHaoHut = globalLoss[1] + globalLoss[2] + globalLoss[3];
+  if(document.getElementById('kpi-hh')) document.getElementById('kpi-hh').innerHTML = `${totalHaoHut} <span style="font-size:14px">kg</span>`;
+}
+
+function updateLotSelectOptions() {
+  const selectNode = document.getElementById('l-lot-select');
+  if(!selectNode) return;
+  selectNode.innerHTML = LOTS.map((l, i) => `<option value="${i}">${l.name}</option>`).join('');
+}
+
 function selectLot(idx){
   selLot = LOTS[idx];
   document.getElementById('cur-lot-name').textContent = selLot.name;
@@ -613,6 +643,7 @@ function submitOrder(){
   const gia = parseInt(document.getElementById('f-gia').value)||0;
   const loai = parseInt(document.getElementById('f-loai').value)||1;
   const nv = document.getElementById('f-nv').value;
+  const orderDebt = parseFloat(document.getElementById('f-debt').value)||0;
   
   if(!khach || kg<=0 || gia<=0){
     showToast('⚠️ Vui lòng nhập đủ thông tin khách, số kg và giá!','var(--orange)');
@@ -622,39 +653,72 @@ function submitOrder(){
   RECENT_TX.unshift({khach: `${khach} (${sellType==='si'?'sỉ':'lẻ'})`, kg, loai, gia, nv, time: new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}), ok: true});
   if(selLot) selLot.sold += kg;
   
+  let targetKhach = CUSTOMERS.find(c => c.name.toLowerCase() === khach.toLowerCase());
+  if(targetKhach) {
+    targetKhach.debt += orderDebt;
+    targetKhach.total += kg;
+    targetKhach.buys += 1;
+  } else {
+    CUSTOMERS.push({name: khach, type: sellType, phone: '', buys: 1, total: kg, debt: orderDebt});
+  }
+  
   document.getElementById('f-khach').value='';
   document.getElementById('f-kg').value='';
+  document.getElementById('f-debt').value='';
+  
   renderRecentTx();
   renderLotStrip();
-  showToast('✅ Đã lưu giao dịch và đồng bộ lên Cloud!','var(--green)');
+  renderCustomerList();
+  updateKPIAndLossUI();
   
-  apiCall({action:"submitOrder", khach, kg, gia, loai, nv, type:sellType, loHang: selLot.name});
+  showToast('✅ Đã lưu đơn hàng và cộng dồn nợ vào hệ thống!','var(--green)');
+  apiCall({action:"submitOrder", khach, kg, gia, loai, nv, type:sellType, loHang: selLot.name, debt: orderDebt});
 }
 
 function submitLoss(){
-  const loai = document.getElementById('l-loai').value;
+  const lotIdx = document.getElementById('l-lot-select').value;
+  const loai = parseInt(document.getElementById('l-loai').value);
   const kg = parseFloat(document.getElementById('l-kg').value)||0;
   const note = document.getElementById('l-note').value.trim();
+  
   if(kg<=0){ showToast('⚠️ Vui lòng nhập khối lượng hao hụt!','var(--orange)'); return; }
   
-  showToast('✅ Đã ghi nhận hao hụt hệ thống!','var(--green)');
+  let selectedLossLot = LOTS[lotIdx];
+  if(selectedLossLot) {
+    selectedLossLot.sold += kg; 
+  }
+  
+  globalLoss[loai] += kg;
+  
   document.getElementById('l-kg').value='';
   document.getElementById('l-note').value='';
   
-  apiCall({action:"submitLoss", loaiLoss: loai, kg, note});
+  renderLotStrip();
+  renderLotList();
+  updateKPIAndLossUI();
+  
+  showToast('✅ Đã trừ kho và lưu hao hụt thành công!','var(--green)');
+  apiCall({action:"submitLoss", loaiLoss: loai, kg, note, loHang: selectedLossLot ? selectedLossLot.name : ''});
 }
 
 function addCustomerSubmit(){
   const name = document.getElementById('c-name').value.trim();
   const phone = document.getElementById('c-phone').value.trim();
   const type = document.getElementById('c-type').value;
+  const debt = parseFloat(document.getElementById('c-debt').value)||0;
+  
   if(!name){ showToast('⚠️ Không được bỏ trống tên đối tác!','var(--orange)'); return; }
   
-  CUSTOMERS.push({name, type, phone, buys:0, total:0, debt:0});
+  CUSTOMERS.push({name, type, phone, buys:0, total:0, debt: debt});
   closeModal('m-addkh');
+  document.getElementById('c-name').value='';
+  document.getElementById('c-phone').value='';
+  document.getElementById('c-debt').value='';
+  
   renderCustomerList();
-  showToast('✅ Đã thêm khách: '+name);
-  apiCall({action:"addCustomer", name, phone, type});
+  updateKPIAndLossUI();
+  showToast('✅ Đã thêm khách hàng: '+name);
+  apiCall({action:"addCustomer", name, phone, type, debt});
 }
 
 function addEmployeeSubmit(){
@@ -663,6 +727,7 @@ function addEmployeeSubmit(){
   
   EMPLOYEES.push({name, kg:0, avgPrice:0, ref:85000, anomalies:0, status:'ok'});
   closeModal('m-addnv');
+  document.getElementById('e-name').value='';
   renderEmployeeList();
   showToast('✅ Thêm nhân viên thành công!');
   apiCall({action:"addEmployee", name, phone:""});
@@ -682,17 +747,17 @@ function addLotSubmit(){
   
   LOTS.push(newLot);
   closeModal('m-addlot');
+  
   renderLotStrip();
   renderLotList();
+  updateLotSelectOptions();
   
-  showToast('✅ Đã mở lô mới và đang đồng bộ ngầm...');
+  showToast('✅ Đã mở lô mới thành công!');
   document.getElementById('nl-name').value='';
   document.getElementById('nl-kg').value='';
   apiCall({action:"addLot", name, kg, v1, v2, v3});
 }
 
-// ── ĐIỀU HƯỚNG TABS ──
-const pages = ['pg-home','pg-nhap','pg-haohut','pg-nv','pg-kh','pg-lo'];
 function gotoTab(i){
   pages.forEach((p,j)=>{
     const el = document.getElementById(p);
@@ -706,7 +771,6 @@ function gotoTab(i){
 function openModal(id){ document.getElementById(id).style.display = 'flex'; }
 function closeModal(id){ document.getElementById(id).style.display = 'none'; }
 
-// ── CÁC HÀM RENDER ÉP BUỘC ĐÚNG CLASS GỐC BAN ĐẦU ĐỂ KHÔNG VỠ GIAO DIỆN ──
 function renderLotStrip(){
   const container = document.getElementById('lot-strip');
   if(!container) return;
@@ -778,7 +842,7 @@ function renderLotList(){
     <div class="tx-row" style="background:var(--card2);border-radius:10px;margin-bottom:8px;">
       <div>
         <div style="font-weight:700;">${l.name}</div>
-        <div style="font-size:12px;color:var(--muted)">Tổng: ${l.kg} kg • Giá Vốn L1: ${(l.voc[1]/1000).toFixed(0)}k/kg</div>
+        <div style="font-size:12px;color:var(--muted)">Tổng: ${l.kg} kg • Sỉ Ri6: ${(l.voc[1]/1000).toFixed(0)}k • Lẻ: ${(l.san[1]/1000).toFixed(0)}k</div>
       </div>
       <div style="text-align:right">
         <div style="font-weight:700;color:var(--green)">${(((l.sold||0)/l.kg)*100).toFixed(0)}%</div>
@@ -794,13 +858,14 @@ function showToast(msg,color='var(--gold)'){
   setTimeout(()=>{ t.style.opacity = '0'; },3000);
 }
 
-// BẮT ĐẦU CHẠY TẢI TRANG
 window.onload = function(){
   renderLotStrip();
   renderRecentTx();
   renderEmployeeList();
   renderCustomerList();
   renderLotList();
+  updateLotSelectOptions();
+  updateKPIAndLossUI();
   if(selLot) updateFormPrices();
 };
 </script>
