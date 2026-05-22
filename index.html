@@ -6,7 +6,7 @@
 <title>Vựa Sầu — Quản Lý</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
+:root {
   --bg:#0d1b10;--card:#162219;--card2:#1e2e22;--border:#2a4030;
   --gold:#f5c842;--gold2:#e8a800;
   --green:#3ddc84;--green2:#1fa85a;
@@ -19,7 +19,7 @@
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
 
-/* ── HEADER ── */
+/* HEADER */
 .hdr{
   background:linear-gradient(135deg,#0d2a12,#162219);
   border-bottom:2px solid var(--gold2);
@@ -45,16 +45,16 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 }
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,79,79,.5)}60%{box-shadow:0 0 0 8px rgba(255,79,79,0)}}
 
-/* ── SCROLL AREA ── */
+/* SCROLL AREA */
 .scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:72px;}
 .scroll-area::-webkit-scrollbar{width:3px;}
 .scroll-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 
-/* ── PAGES ── */
+/* PAGES */
 .page{display:none;padding:14px;}
 .page.active{display:block;}
 
-/* ── BOTTOM NAV ── */
+/* BOTTOM NAV */
 .bnav{
   position:fixed;bottom:0;left:0;right:0;height:64px;z-index:100;
   display:grid;grid-template-columns:repeat(6,1fr);
@@ -67,7 +67,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .bni.on{color:var(--gold);}
 .bni.on .bni-ico{transform:translateY(-2px);filter:drop-shadow(0 2px 8px rgba(245,200,66,.4));}
 
-/* ── KPI GRID ── */
+/* KPI GRID */
 .kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .kcard{
   background:var(--card);border-radius:14px;padding:13px 12px;
@@ -89,18 +89,18 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .k-trend.up{color:var(--green);}
 .k-trend.dn{color:var(--red);}
 
-/* ── SECTION ── */
+/* SECTION */
 .sec{margin-bottom:18px;}
 .sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .sec-ttl{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:6px;}
-.btn-xs{background:var(--card2);border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;}
+.btn-xs{background:var(--card2);border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:20px;font-size:12px;cursor:pointer;}
 
-/* ── LOT STRIP ── */
+/* LOT STRIP */
 .lot-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;}
 .lot-strip::-webkit-scrollbar{display:none;}
 .lot-card{
   flex-shrink:0;background:var(--card);border:1px solid var(--border);
-  border-radius:10px;padding:8px 12px;min-width:120px;cursor:pointer;
+  border-radius:10px;padding:8px 12px;min-width:140px;cursor:pointer;
   transition:border-color .2s;
 }
 .lot-card.active{border-color:var(--gold);background:rgba(245,200,66,.08);}
@@ -108,7 +108,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .lot-status.open{background:var(--green);}
 .lot-status.closed{background:var(--muted);}
 
-/* ── DONUT CHART ── */
+/* DONUT CHART */
 .donut-wrap{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:14px;padding:14px;border:1px solid var(--border);}
 .donut-box{position:relative;width:96px;height:96px;flex-shrink:0;}
 .donut-box svg{width:100%;height:100%;transform:rotate(-90deg);}
@@ -121,7 +121,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .dleg-name{font-size:12px;flex:1;}
 .dleg-val{font-size:12px;font-weight:700;}
 
-/* ── TRANSACTION LIST ── */
+/* TRANSACTION LIST */
 .txlist{display:flex;flex-direction:column;gap:8px;}
 .tx-row{
   background:var(--card);border-radius:12px;padding:11px 13px;
@@ -131,7 +131,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .tx-row.bad{border-left-color:var(--red);background:rgba(255,79,79,.06);}
 .tx-row.warn{border-left-color:var(--orange);}
 
-/* ── FORM CONTROL ── */
+/* FORM CONTROL */
 .fcard{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);}
 .frow{margin-bottom:13px;}
 .flbl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px;}
@@ -139,45 +139,36 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   width:100%;background:var(--card2);border:1.5px solid var(--border);
   border-radius:10px;padding:13px 14px;color:var(--text);
   font-family:'Be Vietnam Pro',sans-serif;font-size:16px;outline:none;
-  transition:border-color .2s;-webkit-appearance:none;
 }
 .finput:focus,.fsel:focus{border-color:var(--gold);}
-.finput::placeholder{color:var(--muted);}
-.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.fgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 
-/* Sỉ lẻ toggle */
 .type-toggle{display:flex;border-radius:10px;overflow:hidden;border:1.5px solid var(--border);}
-.tt-btn{flex:1;padding:13px 8px;background:var(--card2);border:none;color:var(--muted);font-family:'Be Vietnam Pro',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;}
+.tt-btn{flex:1;padding:13px 8px;background:var(--card2);border:none;color:var(--muted);font-weight:700;cursor:pointer;text-align:center;}
 .tt-btn.active{background:rgba(63,220,132,.15);color:var(--green);}
 #btn-si.active{background:rgba(245,200,66,.15);color:var(--gold);}
 
-/* Cảnh báo đỏ */
-.fraud-box{display:none;background:rgba(255,79,79,.12);border:1.5px solid var(--red);border-radius:10px;padding:11px 13px;margin-bottom:12px;}
-.fb-ttl{color:var(--red);font-weight:700;font-size:13px;margin-bottom:4px;}
-.fb-msg{font-size:12px;color:#ff9090;}
+/* Hộp cảnh báo */
+.fraud-box{display:none;border-radius:10px;padding:11px 13px;margin-bottom:12px;}
+.fraud-box.danger{display:block;background:rgba(255,79,79,.12);border:1.5px solid var(--red);}
+.fraud-box.warning{display:block;background:rgba(255,159,67,.12);border:1.5px solid var(--orange);}
+.fb-ttl{font-weight:700;font-size:13px;margin-bottom:4px;}
+.fraud-box.danger .fb-ttl{color:var(--red);}
+.fraud-box.warning .fb-ttl{color:var(--orange);}
+.fb-msg{font-size:12px;color:var(--text);}
 
-/* Xem trước tiền */
 .total-prev{background:var(--card2);border-radius:10px;padding:12px;text-align:center;margin-bottom:14px;}
 .tp-lbl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;}
 .tp-val{font-family:'Baloo 2',cursive;font-size:30px;font-weight:800;color:var(--gold);line-height:1.1;}
 .tp-detail{font-size:11px;color:var(--muted);margin-top:3px;}
 
-/* Ô Lô đang chọn */
 .lot-sel-box{background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;}
 .ls-active{border-color:var(--green);}
 .ls-row{display:flex;justify-content:space-between;align-items:center;}
 .ls-name{font-size:14px;font-weight:700;color:var(--gold);}
-.ls-gia{font-size:13px;color:var(--green);font-weight:700;}
-.ls-info{font-size:11px;color:var(--muted);margin-top:3px;}
-.ls-change{font-size:11px;color:var(--blue);cursor:pointer;text-decoration:underline;}
-
-/* Nút Submit */
-.btn-submit{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:12px;padding:15px;color:#1a1100;font-family:'Baloo 2',cursive;font-size:17px;font-weight:800;cursor:pointer;transition:transform .1s;margin-top:2px;}
-.btn-submit:active{transform:scale(.98);}
+.btn-submit{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:12px;padding:15px;color:#1a1100;font-family:'Baloo 2',cursive;font-size:17px;font-weight:800;cursor:pointer;}
 .btn-submit.green-btn{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;}
 
-/* ── BẢNG HAO HỤT ── */
+/* HAO HỤT BẢNG */
 .ltable{background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border);}
 .lthd{display:grid;grid-template-columns:1.8fr 1fr 1fr 1.2fr;gap:6px;padding:9px 13px;background:var(--card2);}
 .lthd-c{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;}
@@ -190,20 +181,16 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .lpct.warn{color:var(--orange);}
 .lpct.bad{color:var(--red);}
 
-/* Badge */
 .badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;margin-left:5px;}
 .badge.si{background:rgba(245,200,66,.15);color:var(--gold);}
 .badge.le{background:rgba(61,220,132,.15);color:var(--green);}
 
-/* ── MODAL OVERLAY ── */
 .moverlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:flex-end;}
 .msheet{background:var(--card);border-radius:20px 20px 0 0;padding:18px 16px 30px;width:100%;max-height:85vh;overflow-y:auto;}
 .mhandle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px;}
 .mttl{font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;color:var(--gold);margin-bottom:14px;}
 .mclose{float:right;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;}
-
-/* ── TOAST CONTAINER ── */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green2);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green2);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;opacity:0;transition:all .3s;pointer-events:none;}
 </style>
 </head>
 <body>
@@ -212,17 +199,17 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   <div class="hdr-brand">
     <span class="hdr-icon">🌳</span>
     <div>
-      <div class="hdr-name">Vựa Sầu Riêng Cô Huyền</div>
-      <div class="hdr-sub"><i></i>Mua may bán đắt</i></div>
+      <div class="hdr-name">Vựa Sầu Riêng</div>
+      <div class="hdr-sub">Hệ thống quản lý ngầm</div>
     </div>
   </div>
   <div class="hdr-right">
-    <div class="hdr-date">Thứ Sáu, 22/05</div>
-    <button class="bell-btn" onclick="openModal('m-alerts')">
-      🔔<span class="bdg">3</span>
-    </button>
+    <div class="hdr-date">Hôm Nay</div>
+    <button class="bell-btn" onclick="gotoTab(2)">🔔<span class="bdg" id="total-loss-badge">0</span></button>
   </div>
 </div>
+
+<datalist id="customer-suggestions"></datalist>
 
 <div class="scroll-area" id="scrollArea">
 
@@ -230,79 +217,46 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
     <div class="kgrid">
       <div class="kcard c-gold">
         <div class="k-lbl">Doanh Thu</div>
-        <div class="k-val gold" id="kpi-dt">92.4 <span style="font-size:14px">tr</span></div>
-        <div class="k-trend up">▲ +12% so hôm qua</div>
+        <div class="k-val gold" id="kpi-dt">0 <span style="font-size:14px">đ</span></div>
       </div>
       <div class="kcard c-green">
         <div class="k-lbl">Sản Lượng Bán</div>
-        <div class="k-val green" id="kpi-sl">1,155 <span style="font-size:14px">kg</span></div>
-        <div class="k-unit">Kho còn: 245 kg</div>
+        <div class="k-val green" id="kpi-sl">0 <span style="font-size:14px">kg</span></div>
       </div>
       <div class="kcard c-red">
         <div class="k-lbl">Nợ Chưa Thu</div>
-        <div class="k-val red" id="kpi-no">10.5 <span style="font-size:14px">tr</span></div>
-        <div class="k-trend dn">⚠️ Cập nhật từ danh sách</div>
+        <div class="k-val red" id="kpi-no">0 <span style="font-size:14px">tr</span></div>
       </div>
       <div class="kcard c-orange">
-        <div class="k-lbl">Hao Hụt / Lỗi</div>
-        <div class="k-val orange" id="kpi-hh">85 <span style="font-size:14px">kg</span></div>
-        <div class="k-unit">Tỷ lệ: 6.8% (Cao)</div>
+        <div class="k-lbl">Tổng Hao Hụt</div>
+        <div class="k-val orange" id="kpi-hh">0 <span style="font-size:14px">kg</span></div>
       </div>
     </div>
 
     <div class="sec">
-      <div class="sec-hd">
-        <div class="sec-ttl">🏷️ Phân Loại Hôm Nay</div>
-      </div>
-      <div class="donut-wrap">
-        <div class="donut-box">
-          <svg viewBox="0 0 36 36">
-            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#1e2e22" stroke-width="3.5"/>
-            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#f5c842" stroke-width="3.5" stroke-dasharray="35 65" stroke-dashoffset="0"/>
-            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#3ddc84" stroke-width="3.5" stroke-dasharray="45 55" stroke-dashoffset="-35"/>
-            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#7a9b80" stroke-width="3.5" stroke-dasharray="14 86" stroke-dashoffset="-80"/>
-            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#ff4f4f" stroke-width="3.5" stroke-dasharray="6 94" stroke-dashoffset="-94"/>
-          </svg>
-          <div class="donut-ctr"><span class="dc-val">1,240</span><span class="dc-lbl">kg</span></div>
-        </div>
-        <div class="dleg">
-          <div class="dleg-row"><div class="dleg-dot" style="background:#f5c842"></div><span class="dleg-name">🥇 Loại 1</span><span class="dleg-val" style="color:#f5c842">434 kg</span></div>
-          <div class="dleg-row"><div class="dleg-dot" style="background:#3ddc84"></div><span class="dleg-name">🥈 Loại 2</span><span class="dleg-val" style="color:#3ddc84">558 kg</span></div>
-          <div class="dleg-row"><div class="dleg-dot" style="background:#7a9b80"></div><span class="dleg-name">🥉 Loại 3</span><span class="dleg-val" style="color:#7a9b80">163 kg</span></div>
-          <div class="dleg-row"><div class="dleg-dot" style="background:#ff4f4f"></div><span class="dleg-name">🍂 Hao hụt</span><span class="dleg-val" style="color:#ff4f4f">85 kg</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sec">
-      <div class="sec-hd">
-        <div class="sec-ttl">🧾 Giao Dịch Gần Đây</div>
-        <button class="btn-xs" onclick="gotoTab(1)">Thêm mới</button>
-      </div>
+      <div class="sec-hd"><div class="sec-ttl">🧾 Giao Dịch Gần Đây</div><button class="btn-xs" onclick="gotoTab(1)">Thêm mới</button></div>
       <div class="txlist" id="recent-tx-list"></div>
     </div>
   </div>
 
   <div class="page" id="pg-nhap">
     <div class="sec">
-      <div class="sec-ttl" style="margin-bottom:12px">📦 Chọn Lô Hàng</div>
+      <div class="sec-ttl" style="margin-bottom:12px">📦 Bước 1: Chọn Lô Hàng</div>
       <div class="lot-strip" id="lot-strip"></div>
     </div>
 
     <div class="sec">
-      <div class="sec-ttl" style="margin-bottom:12px">📝 Nhập Giao Dịch</div>
+      <div class="sec-ttl" style="margin-bottom:12px">📝 Bước 2: Nhập Giao Dịch</div>
       <div class="fcard">
         <div class="frow">
-          <label class="flbl">📦 Lô Đang Bán</label>
+          <label class="flbl">📦 Lô Đang Chọn Bán</label>
           <div class="lot-sel-box ls-active">
-            <div class="ls-row">
-              <span class="ls-name" id="cur-lot-name">Lô A — Ri6 (22/5)</span>
-            </div>
+            <div class="ls-row"><span class="ls-name" id="cur-lot-name">Chưa chọn lô nào</span></div>
           </div>
         </div>
 
         <div class="frow">
-          <label class="flbl">🛒 Loại Bán</label>
+          <label class="flbl">🛒 Hình Thức Bán</label>
           <div class="type-toggle">
             <button class="tt-btn active" id="btn-le" onclick="setSellType('le')">🧺 Lẻ</button>
             <button class="tt-btn" id="btn-si" onclick="setSellType('si')">🚛 Sỉ</button>
@@ -311,7 +265,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 
         <div class="fgrid">
           <div class="frow">
-            <label class="flbl">🏷️ Loại Sầu</label>
+            <label class="flbl">🏷️ Phân Loại</label>
             <select class="fsel" id="f-loai" onchange="updateFormPrices()">
               <option value="1">🥇 Loại 1</option>
               <option value="2">🥈 Loại 2</option>
@@ -319,62 +273,57 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
             </select>
           </div>
           <div class="frow">
-            <label class="flbl">⚖️ Số KG</label>
+            <label class="flbl">⚖️ Số Khối Lượng (KG)</label>
             <input class="finput" id="f-kg" type="number" placeholder="0" oninput="calcTotal()">
           </div>
         </div>
 
         <div class="fgrid">
           <div class="frow">
-            <label class="flbl">💵 Giá Bán / KG (đồng)</label>
+            <label class="flbl">💵 Giá Bán / KG (đ)</label>
             <input class="finput" id="f-gia" type="number" oninput="calcTotal()">
           </div>
           <div class="frow">
-            <label class="flbl">🔴 Ghi Nợ Đơn Này (triệu đ)</label>
+            <label class="flbl">🔴 Ghi Nợ Đơn (triệu đ)</label>
             <input class="finput" id="f-debt" type="number" placeholder="0 nếu trả hết">
           </div>
         </div>
 
         <div class="frow">
-          <label class="flbl">👤 Khách Hàng</label>
-          <input class="finput" id="f-khach" type="text" placeholder="Tên khách hàng...">
+          <label class="flbl">👤 Tên Khách Hàng (Tự gợi ý)</label>
+          <input class="finput" id="f-khach" type="text" list="customer-suggestions" placeholder="Nhập tên đối tác hoặc khách...">
         </div>
 
         <div class="frow">
-          <label class="flbl">👷 Nhân Viên Cân</label>
-          <select class="fsel" id="f-nv">
-            <option>Minh</option>
-            <option>Tuấn</option>
-            <option>Hà</option>
-            <option>Dũng</option>
-          </select>
+          <label class="flbl">👷 Nhân Viên Đứng Cân (Tự động cập nhật)</label>
+          <select class="fsel" id="f-nv"></select>
         </div>
 
         <div class="fraud-box" id="fraud-box">
-          <div class="fb-ttl">🚨 CẢNH BÁO XẢ HÀNG GIÁ THẤP</div>
+          <div class="fb-ttl" id="fraud-title">🚨 CẢNH BÁO HỆ THỐNG</div>
           <div class="fb-msg" id="fraud-msg"></div>
         </div>
 
         <div class="total-prev">
-          <div class="tp-lbl">Tổng Tiền Đơn Hàng</div>
+          <div class="tp-lbl">Tổng Thành Tiền</div>
           <div class="tp-val" id="total-val">—</div>
           <div class="tp-detail" id="total-detail"></div>
         </div>
 
-        <button class="btn-submit" onclick="submitOrder()">💾 LƯU ĐƠN HÀNG</button>
+        <button class="btn-submit" onclick="submitOrder()">💾 LƯU ĐƠN HÀNG LÊN SHEET</button>
       </div>
     </div>
 
     <div class="sec" style="margin-top:20px;">
-      <div class="sec-ttl" style="margin-bottom:12px">🍂 Ghi Nhận Hao Hụt Nhanh</div>
+      <div class="sec-ttl" style="margin-bottom:12px">🍂 Thêm Hao Hụt Phát Sinh</div>
       <div class="fcard">
         <div class="frow">
-          <label class="flbl">📦 Hao Hụt Thuộc Lô Nào?</label>
+          <label class="flbl">📦 Thuộc Lô Hàng</label>
           <select class="fsel" id="l-lot-select"></select>
         </div>
         <div class="fgrid">
           <div class="frow">
-            <label class="flbl">📋 Loại Thất Thoát</label>
+            <label class="flbl">📋 Loại Hao Hụt</label>
             <select class="fsel" id="l-loai">
               <option value="1">🥇 Loại 1</option>
               <option value="2">🥈 Loại 2</option>
@@ -382,15 +331,15 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
             </select>
           </div>
           <div class="frow">
-            <label class="flbl">⚖️ Khối Lượng (kg)</label>
+            <label class="flbl">⚖️ Số KG Hao</label>
             <input class="finput" id="l-kg" type="number" placeholder="0">
           </div>
         </div>
         <div class="frow">
-          <label class="flbl">📌 Ghi Chú Lý Do</label>
-          <input class="finput" id="l-note" type="text" placeholder="Thối đầu, chim khoét, sóc cắn...">
+          <label class="flbl">📌 Chi Tiết Lý Do</label>
+          <input class="finput" id="l-note" type="text" placeholder="Thối đầu, nứt rụng, sóc cắn...">
         </div>
-        <button class="btn-submit green-btn" onclick="submitLoss()">💾 LƯU HAO HỤT</button>
+        <button class="btn-submit green-btn" onclick="submitLoss()">💾 LƯU HAO HỤT THẤT THOÁT</button>
       </div>
     </div>
   </div>
@@ -401,24 +350,20 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
       <div class="ltable" style="margin-top:10px;">
         <div class="lthd">
           <div class="lthd-c">Phân Loại</div>
-          <div class="lthd-c">Nhập (kg)</div>
-          <div class="lthd-c">Hao (kg)</div>
-          <div class="lthd-c">Tỷ Lệ</div>
+          <div class="lthd-c">Nhập Kho (kg)</div>
+          <div class="lthd-c">Hao Hụt (kg)</div>
         </div>
         <div class="lrow">
-          <div><div class="lr-name">🥇 Loại 1</div><div class="lr-sub">Ri6 tuyển</div></div>
-          <div class="lr-c">500</div><div class="lr-c" id="loss-l1">24</div>
-          <div class="lr-c"><span class="lpct ok">4.8%</span></div>
+          <div><div class="lr-name">🥇 Loại 1</div></div>
+          <div class="lr-c">Tổng lô</div><div class="lr-c" style="color:var(--red); font-weight:700" id="loss-l1">0</div>
         </div>
         <div class="lrow">
-          <div><div class="lr-name">🥈 Loại 2</div><div class="lr-sub">Hàng xô khá</div></div>
-          <div class="lr-c">600</div><div class="lr-c" id="loss-l2">48</div>
-          <div class="lr-c"><span class="lpct warn">8.0%</span></div>
+          <div><div class="lr-name">🥈 Loại 2</div></div>
+          <div class="lr-c">Tổng lô</div><div class="lr-c" style="color:var(--red); font-weight:700" id="loss-l2">0</div>
         </div>
         <div class="lrow">
-          <div><div class="lr-name">🥉 Loại 3</div><div class="lr-sub">Hàng dạt kem</div></div>
-          <div class="lr-c">200</div><div class="lr-c" id="loss-l3">13</div>
-          <div class="lr-c"><span class="lpct bad">6.5%</span></div>
+          <div><div class="lr-name">🥉 Loại 3</div></div>
+          <div class="lr-c">Tổng lô</div><div class="lr-c" style="color:var(--red); font-weight:700" id="loss-l3">0</div>
         </div>
       </div>
     </div>
@@ -426,29 +371,31 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 
   <div class="page" id="pg-nv">
     <div class="sec-hd">
-      <div class="sec-ttl">👥 Giám Sát Nhân Viên</div>
-      <button class="btn-xs" onclick="openModal('m-addnv')">+ Thêm NV</button>
+      <div class="sec-ttl">👥 Giám Sát Nhân Viên Đứng Cân</div>
+      <button class="btn-xs" onclick="openModal('m-addnv')">+ Tạo Nhân Viên</button>
     </div>
     <div class="txlist" id="employee-list"></div>
   </div>
 
   <div class="page" id="pg-kh">
     <div class="sec-hd">
-      <div class="sec-ttl">👥 Quản Lý Khách Hàng</div>
-      <button class="btn-xs" onclick="openModal('m-addkh')">+ Thêm Khách</button>
+      <div class="sec-ttl">👥 Quản Lý Danh Sách Khách Hàng</div>
+      <button class="btn-xs" onclick="openModal('m-addkh')">+ Tạo Khách Mới</button>
     </div>
     <div class="txlist" id="customer-list"></div>
   </div>
 
   <div class="page" id="pg-lo">
     <div class="sec-hd">
-      <div class="sec-ttl">📦 Kho Lô Hàng Sầu Riêng</div>
-      <button class="btn-xs" onclick="openModal('m-addlot')">+ Thêm Lô</button>
+      <div class="sec-ttl">📦 Kho Lô Hàng Nhập Về</div>
+      <button class="btn-xs" onclick="openModal('m-addlot')">+ Khai Thêm Lô</button>
     </div>
     <div class="txlist" id="lot-list"></div>
   </div>
 
-</div><div class="bnav">
+</div>
+
+<div class="bnav">
   <div class="bni on" id="nav0" onclick="gotoTab(0)"><span class="bni-ico">📊</span><span class="bni-lbl">Tổng Quan</span></div>
   <div class="bni" id="nav1" onclick="gotoTab(1)"><span class="bni-ico">📝</span><span class="bni-lbl">Nhập Đơn</span></div>
   <div class="bni" id="nav2" onclick="gotoTab(2)"><span class="bni-ico">⚖️</span><span class="bni-lbl">Hao Hụt</span></div>
@@ -463,27 +410,15 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   <div class="msheet">
     <div class="mhandle"></div>
     <button class="mclose" onclick="closeModal('m-addkh')">✕</button>
-    <div class="mttl">👤 Thêm Đối Tác Mới</div>
+    <div class="mttl">👤 Thêm Khách Hàng Mới</div>
+    <div class="frow"><label class="flbl">Tên Khách</label><input class="finput" id="c-name" placeholder="Ví dụ: Anh Lộc Cái Bè..."></div>
+    <div class="frow"><label class="flbl">Số Điện Thoại</label><input class="finput" id="c-phone" placeholder="Nhập số liên hệ..."></div>
+    <div class="frow"><label class="flbl">🔴 Tiền Nợ Gối Đầu Cũ (tr đ)</label><input class="finput" id="c-debt" type="number" placeholder="0"></div>
     <div class="frow">
-      <label class="flbl">Tên khách hàng</label>
-      <input class="finput" id="c-name" placeholder="Ví dụ: Anh Sáu Lộc...">
+      <label class="flbl">Phân Loại Nhóm</label>
+      <select class="fsel" id="c-type"><option value="le">Khách mua lẻ</option><option value="si">Đối tác gom sỉ</option></select>
     </div>
-    <div class="frow">
-      <label class="flbl">Số điện thoại</label>
-      <input class="finput" id="c-phone" placeholder="Nhập số liên hệ...">
-    </div>
-    <div class="frow">
-      <label class="flbl">🔴 Số tiền nợ gối đầu cũ (triệu đ)</label>
-      <input class="finput" id="c-debt" type="number" placeholder="Ví dụ: 2.5">
-    </div>
-    <div class="frow">
-      <label class="flbl">Phân nhóm khách</label>
-      <select class="fsel" id="c-type">
-        <option value="le">Basket Khách Lẻ</option>
-        <option value="si">Chuyên sỉ thùng / Container</option>
-      </select>
-    </div>
-    <button class="btn-submit" onclick="addCustomerSubmit()">💾 LƯU KHÁCH HÀNG</button>
+    <button class="btn-submit" onclick="addCustomerSubmit()">💾 LƯU KHÁCH</button>
   </div>
 </div>
 
@@ -491,12 +426,10 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   <div class="msheet">
     <div class="mhandle"></div>
     <button class="mclose" onclick="closeModal('m-addnv')">✕</button>
-    <div class="mttl">👷 Tạo Tài Khoản Nhân Viên</div>
-    <div class="frow">
-      <label class="flbl">Họ tên nhân viên</label>
-      <input class="finput" id="e-name" placeholder="Nhập tên nhân viên đứng cân...">
-    </div>
-    <button class="btn-submit" onclick="addEmployeeSubmit()">💾 LƯU NHÂN VIÊN</button>
+    <div class="mttl">👷 Đăng Ký Nhân Viên Mới</div>
+    <div class="frow"><label class="flbl">Họ Tên Nhân Viên</label><input class="finput" id="e-name" placeholder="Tên nhân viên đứng cân..."></div>
+    <div class="frow"><label class="flbl">Số Điện Thoại Nhân Viên</label><input class="finput" id="e-phone" placeholder="Nhập SĐT nhân viên..."></div>
+    <button class="btn-submit" onclick="addEmployeeSubmit()">💾 KÍCH HOẠT NHÂN VIÊN</button>
   </div>
 </div>
 
@@ -504,115 +437,108 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   <div class="msheet">
     <div class="mhandle"></div>
     <button class="mclose" onclick="closeModal('m-addlot')">✕</button>
-    <div class="mttl">📦 Mở Lô Hàng Mới Nhập</div>
-    <div class="frow">
-      <label class="flbl">Tên định danh lô hàng</label>
-      <input class="finput" id="nl-name" placeholder="Ví dụ: Lô C — Ri6 Cái Bè">
-    </div>
-    <div class="frow">
-      <label class="flbl">Tổng khối lượng (kg)</label>
-      <input class="finput" id="nl-kg" type="number" placeholder="1000">
-    </div>
-    <div style="font-size:11px;color:var(--gold);font-weight:700;margin-bottom:8px;text-transform:uppercase;">💵 Giá Vốn Đầu Vào (đ/kg)</div>
+    <div class="mttl">📦 Nhập Lô Sầu Riêng Mới</div>
+    <div class="frow"><label class="flbl">Tên Định Danh Lô</label><input class="finput" id="nl-name" placeholder="Ví dụ: Lô C - Ri6 Vĩnh Long"></div>
+    <div class="frow"><label class="flbl">Tổng Trọng Lượng Nhập Đầu Vào (KG)</label><input class="finput" id="nl-kg" type="number" placeholder="1000"></div>
+    <div style="font-size:11px;color:var(--gold);font-weight:700;margin-bottom:8px;text-transform:uppercase;">💵 Giá vốn đầu vào (đ/kg)</div>
     <div class="fgrid3">
-      <div class="frow">
-        <label class="flbl">🥇 Loại 1</label>
-        <input class="finput" id="nl-v1" type="number" placeholder="65000">
-      </div>
-      <div class="frow">
-        <label class="flbl">🥈 Loại 2</label>
-        <input class="finput" id="nl-v2" type="number" placeholder="52000">
-      </div>
-      <div class="frow">
-        <label class="flbl">🥉 Loại 3</label>
-        <input class="finput" id="nl-v3" type="number" placeholder="38000">
-      </div>
+      <div class="frow"><label class="flbl">Loại 1</label><input class="finput" id="nl-v1" type="number" value="65000"></div>
+      <div class="frow"><label class="flbl">Loại 2</label><input class="finput" id="nl-v2" type="number" value="52000"></div>
+      <div class="frow"><label class="flbl">Loại 3</label><input class="finput" id="nl-v3" type="number" value="38000"></div>
     </div>
-    <button class="btn-submit" onclick="addLotSubmit()">💾 KÍCH HOẠT MỞ LÔ</button>
+    <button class="btn-submit" onclick="addLotSubmit()">💾 KHỞI TẠO LÔ</button>
   </div>
 </div>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPVSE0nvgNKdTowZxtYPH6lZRPHdq47vWUN9k6pQ3oNNnzpXTLKy2qqmq06vuvrAz_-g/exec";
-
-// Khai báo mảng tên trang để xử lý chuyển tab
 const pages = ["pg-home", "pg-nhap", "pg-haohut", "pg-nv", "pg-kh", "pg-lo"];
 
-const LOTS = [
-  {id:'A',name:'Lô A — Ri6 (22/5)',kg:500,sold:380,voc:{1:65000,2:52000,3:38000},san:{1:85000,2:72000,3:55000},open:true},
-  {id:'B',name:'Lô B — Musang (18/5)',kg:300,sold:295,voc:{1:58000,2:46000,3:34000},san:{1:78000,2:65000,3:50000},open:false},
+// KHỞI TẠO DỮ LIỆU GỐC (ĐỌC TỪ LOCALSTORAGE ĐỂ F5 KHÔNG MẤT)
+let LOTS = JSON.parse(localStorage.getItem('SR_LOTS')) || [
+  {id:'A',name:'Lô A — Ri6 Đầu Mùa',kg:1000,sold:0,voc:{1:65000,2:52000,3:38000},san:{1:85000,2:72000,3:55000},open:true},
+  {id:'B',name:'Lô B — Chuồng Bò',kg:500,sold:0,voc:{1:58000,2:46000,3:34000},san:{1:78000,2:65000,3:50000},open:true}
 ];
-let selLot = LOTS[0];
-let sellType = 'le'; 
-
-const EMPLOYEES = [
-  {name:'Minh',kg:450,avgPrice:87000,ref:85000,anomalies:0,status:'ok'},
-  {name:'Tuấn',kg:295,avgPrice:61000,ref:85000,anomalies:2,status:'bad',note:'Giá TB thấp hơn sàn 28% — nghi gian lận'},
-  {name:'Hà',kg:310,avgPrice:83000,ref:82000,anomalies:0,status:'ok'},
-  {name:'Dũng',kg:185,avgPrice:68000,ref:72000,anomalies:1,status:'warn',note:'1 GD giá thấp -8% — đang xem xét'},
+let EMPLOYEES = JSON.parse(localStorage.getItem('SR_EMPLOYEES')) || [
+  {name:'Minh',phone:'0981112223',kg:0}, {name:'Tuấn',phone:'0974445556',kg:0}
 ];
-
-const CUSTOMERS = [
-  {name:'Anh Hùng',type:'si',phone:'0901234567',buys:12,total:182,debt:2.5},
-  {name:'Anh Tâm',type:'si',phone:'0912345678',buys:8,total:138,debt:0},
-  {name:'Chú Bình',type:'si',phone:'0978123456',buys:6,total:101,debt:8},
-  {name:'Cô Hoa',type:'le',phone:'0965432109',buys:18,total:55,debt:0},
-  {name:'Chị Loan',type:'le',phone:'0933211234',buys:24,total:33,debt:0},
+let CUSTOMERS = JSON.parse(localStorage.getItem('SR_CUSTOMERS')) || [
+  {name:'Anh Hùng',type:'si',phone:'0901234567',total:0,debt:2.5},
+  {name:'Chị Loan',type:'le',phone:'0933211234',total:0,debt:0}
 ];
+let RECENT_TX = JSON.parse(localStorage.getItem('SR_RECENT_TX')) || [];
+let globalLoss = JSON.parse(localStorage.getItem('SR_GLOBAL_LOSS')) || {1: 0, 2: 0, 3: 0};
 
-const RECENT_TX = [ 
-  {khach:'Anh Hùng (sỉ)',kg:200,loai:1,gia:85000,nv:'Minh',time:'08:32',ok:true},
-  {khach:'Chị Loan (lẻ)',kg:15,loai:1,gia:60000,nv:'Tuấn',time:'09:15',ok:false},
-  {khach:'Bà Năm (lẻ)',kg:5,loai:2,gia:72000,nv:'Hà',time:'09:41',ok:true},
-  {khach:'Anh Tâm (sỉ)',kg:80,loai:1,gia:58000,nv:'Tuấn',time:'10:05',ok:false},
-];
+let selLot = LOTS[0] || null;
+let sellType = 'le';
 
-let globalLoss = {1: 24, 2: 48, 3: 13};
+// HÀM ĐỒNG BỘ LOCALSTORAGE ĐỂ CHỐNG MẤT DỮ LIỆU KHI TẢI LẠI TRANG (F5)
+function saveToLocalStorage(){
+  localStorage.setItem('SR_LOTS', JSON.stringify(LOTS));
+  localStorage.setItem('SR_EMPLOYEES', JSON.stringify(EMPLOYEES));
+  localStorage.setItem('SR_CUSTOMERS', JSON.stringify(CUSTOMERS));
+  localStorage.setItem('SR_RECENT_TX', JSON.stringify(RECENT_TX));
+  localStorage.setItem('SR_GLOBAL_LOSS', JSON.stringify(globalLoss));
+}
 
-function apiCall(payload) {
-  if (!SCRIPT_URL || SCRIPT_URL.includes("ĐIỀN")) return;
-  
-  // Chuyển sang dùng cấu trúc fetch chuẩn không có no-cors để bắt lỗi
+// HÀM GỬI LÊN GOOGLE SHEETS CÓ BẮT TRẠNG THÁI KHÔNG LO TREO ĐƠ
+function apiCall(payload){
+  if(!SCRIPT_URL || SCRIPT_URL.includes("ĐIỀN")) return;
   fetch(SCRIPT_URL, {
     method: "POST",
+    mode: "cors",
     body: JSON.stringify(payload)
   })
-  .then(response => response.json())
-  .then(res => {
-    if (res.status === "success") {
-      console.log("Dữ liệu đã đồng bộ vào Google Sheets thành công!");
-    } else {
-      console.error("Lỗi từ hệ thống Sheets:", res.error);
-      showToast("⚠️ Lỗi Sheets: " + res.error, "var(--red)");
-    }
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === "success") console.log("Đã đồng bộ Google Sheets!");
+    else showToast("⚠️ Lỗi Sheets: " + data.error, "var(--red)");
   })
-  .catch(e => {
-    console.error("Lỗi đường truyền mạng:", e);
-  });
+  .catch(err => console.error("Lỗi mạng:", err));
+}
+
+// CẬP NHẬT INPUT ĐỘNG: GỢI Ý KHÁCH HÀNG & NHÂN VIÊN ĐƠN HÀNG
+function updateFormInputsDynamic(){
+  // 1. Tạo gợi ý Khách hàng dạng Datalist
+  const custSug = document.getElementById('customer-suggestions');
+  if(custSug){
+    custSug.innerHTML = CUSTOMERS.map(c => `<option value="${c.name}">${c.type==='si'?'[Sỉ]':'[Lẻ]'} - SĐT: ${c.phone||'Không có'}</option>`).join('');
+  }
+  // 2. Cập nhật thẻ Select nhân viên trong tab Nhập đơn
+  const nvSelect = document.getElementById('f-nv');
+  if(nvSelect){
+    nvSelect.innerHTML = EMPLOYEES.map(e => `<option value="${e.name}">${e.name} (${e.phone||'Trống'})</option>`).join('');
+  }
 }
 
 function updateKPIAndLossUI() {
-  let totalDebt = 0;
+  let totalDT = 0, totalSL = 0, totalDebt = 0;
+  RECENT_TX.forEach(t => {
+    totalDT += (t.kg * t.gia);
+    totalSL += t.kg;
+  });
   CUSTOMERS.forEach(c => totalDebt += c.debt);
-  document.getElementById('kpi-no').innerHTML = `${totalDebt.toFixed(1)} <span style="font-size:14px">tr</span>`;
-  
-  if(document.getElementById('loss-l1')) document.getElementById('loss-l1').textContent = globalLoss[1];
-  if(document.getElementById('loss-l2')) document.getElementById('loss-l2').textContent = globalLoss[2];
-  if(document.getElementById('loss-l3')) document.getElementById('loss-l3').textContent = globalLoss[3];
-  
-  let totalHaoHut = globalLoss[1] + globalLoss[2] + globalLoss[3];
-  if(document.getElementById('kpi-hh')) document.getElementById('kpi-hh').innerHTML = `${totalHaoHut} <span style="font-size:14px">kg</span>`;
+  let totalHao = globalLoss[1] + globalLoss[2] + globalLoss[3];
+
+  document.getElementById('kpi-dt').innerHTML = `${totalDT.toLocaleString()} <span style="font-size:12px">đ</span>`;
+  document.getElementById('kpi-sl').innerHTML = `${totalSL} <span style="font-size:12px">kg</span>`;
+  document.getElementById('kpi-no').innerHTML = `${totalDebt.toFixed(1)} <span style="font-size:12px">tr</span>`;
+  document.getElementById('kpi-hh').innerHTML = `${totalHao} <span style="font-size:12px">kg</span>`;
+  document.getElementById('total-loss-badge').textContent = totalHao;
+
+  if(document.getElementById('loss-l1')) document.getElementById('loss-l1').textContent = globalLoss[1] + " kg";
+  if(document.getElementById('loss-l2')) document.getElementById('loss-l2').textContent = globalLoss[2] + " kg";
+  if(document.getElementById('loss-l3')) document.getElementById('loss-l3').textContent = globalLoss[3] + " kg";
 }
 
 function updateLotSelectOptions() {
   const selectNode = document.getElementById('l-lot-select');
-  if(!selectNode) return;
-  selectNode.innerHTML = LOTS.map((l, i) => `<option value="${i}">${l.name}</option>`).join('');
+  if(selectNode) selectNode.innerHTML = LOTS.map((l, i) => `<option value="${i}">${l.name}</option>`).join('');
 }
 
 function selectLot(idx){
   selLot = LOTS[idx];
-  document.getElementById('cur-lot-name').textContent = selLot.name;
+  if(selLot) document.getElementById('cur-lot-name').textContent = selLot.name;
   renderLotStrip();
   updateFormPrices();
 }
@@ -625,36 +551,52 @@ function setSellType(t){
 }
 
 function updateFormPrices(){
-  if(!selLot)return;
+  if(!selLot) return;
   const loai = document.getElementById('f-loai').value;
-  const price = (sellType==='le') ? selLot.san[loai] : selLot.voc[loai];
-  document.getElementById('f-gia').value = price;
+  document.getElementById('f-gia').value = (sellType==='le') ? selLot.san[loai] : selLot.voc[loai];
   calcTotal();
 }
 
+// LOGIC CẢNH BÁO TỒN KHO KHÔNG ĐỦ & CẢNH BÁO XẢ HÀNG GIÁ THẤP
 function calcTotal(){
   const kg = parseFloat(document.getElementById('f-kg').value)||0;
   const gia = parseInt(document.getElementById('f-gia').value)||0;
   const loai = document.getElementById('f-loai').value;
+  const fBox = document.getElementById('fraud-box');
+
   if(kg<=0){
     document.getElementById('total-val').textContent = '—';
     document.getElementById('total-detail').textContent = '';
-    document.getElementById('fraud-box').style.display='none';
+    fBox.className = "fraud-box";
     return;
   }
+
   const tot = kg*gia;
   document.getElementById('total-val').textContent = tot.toLocaleString('vi-VN') + ' đ';
   document.getElementById('total-detail').textContent = `${kg} kg × ${gia.toLocaleString('vi-VN')} đ`;
   
-  if(sellType==='si' && selLot){
-    const base = selLot.voc[loai];
-    if(gia < base){
-      document.getElementById('fraud-box').style.display='block';
-      document.getElementById('fraud-msg').textContent = `CẢNH BÁO: Giá bán đang thấp hơn cả giá vốn nhập lô (${base.toLocaleString()} đ)!`;
+  // 1. Kiểm tra cảnh báo Tồn kho không đủ
+  if(selLot) {
+    let tonKhoConLai = selLot.kg - selLot.sold;
+    if(kg > tonKhoConLai) {
+      fBox.className = "fraud-box danger";
+      document.getElementById('fraud-title').textContent = "🚨 KHÔNG ĐỦ TỒN KHO XUẤT HÀNG";
+      document.getElementById('fraud-msg').textContent = `Lô hiện tại chỉ còn lại ${tonKhoConLai} kg. Bạn nhập xuất ${kg} kg vượt quá số lượng kho đang có!`;
       return;
     }
   }
-  document.getElementById('fraud-box').style.display='none';
+
+  // 2. Kiểm tra cảnh báo bán dưới giá vốn khi bán sỉ
+  if(sellType==='si' && selLot){
+    const base = selLot.voc[loai];
+    if(gia < base){
+      fBox.className = "fraud-box warning";
+      document.getElementById('fraud-title').textContent = "⚠️ CẢNH BÁO BÁN DƯỚI GIÁ VỐN";
+      document.getElementById('fraud-msg').textContent = `Giá bán sỉ đang thấp hơn giá nhập gốc (${base.toLocaleString()} đ) của lô sầu riêng này!`;
+      return;
+    }
+  }
+  fBox.className = "fraud-box";
 }
 
 function submitOrder(){
@@ -665,33 +607,42 @@ function submitOrder(){
   const nv = document.getElementById('f-nv').value;
   const orderDebt = parseFloat(document.getElementById('f-debt').value)||0;
   
-  if(!khach || kg<=0 || gia<=0){
-    showToast('⚠️ Vui lòng nhập đủ thông tin khách, số kg và giá!','var(--orange)');
+  if(!selLot){ showToast('⚠️ Vui lòng cấu hình tạo một Lô hàng trước!','var(--orange)'); return; }
+  if(!khach || kg<=0 || gia<=0){ showToast('⚠️ Vui lòng điền đủ Tên khách, Số KG và Giá bán!','var(--orange)'); return; }
+
+  // Kiểm tra chặn cứng nếu xuất hàng âm kho quá nhiều
+  if(kg > (selLot.kg - selLot.sold)) {
+    showToast('❌ Xuất hàng thất bại! Kho không đủ hàng.','var(--red)');
     return;
   }
   
-  RECENT_TX.unshift({khach: `${khach} (${sellType==='si'?'sỉ':'lẻ'})`, kg, loai, gia, nv, time: new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}), ok: true});
-  if(selLot) selLot.sold += kg;
+  RECENT_TX.unshift({khach: `${khach} (${sellType==='si'?'Sỉ':'Lẻ'})`, kg, loai, gia, nv, time: new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}), ok: true});
+  selLot.sold += kg;
   
   let targetKhach = CUSTOMERS.find(c => c.name.toLowerCase() === khach.toLowerCase());
   if(targetKhach) {
     targetKhach.debt += orderDebt;
     targetKhach.total += kg;
-    targetKhach.buys += 1;
   } else {
-    CUSTOMERS.push({name: khach, type: sellType, phone: '', buys: 1, total: kg, debt: orderDebt});
+    CUSTOMERS.push({name: khach, type: sellType, phone: '', total: kg, debt: orderDebt});
   }
+
+  let targetNV = EMPLOYEES.find(e => e.name === nv);
+  if(targetNV) targetNV.kg += kg;
   
   document.getElementById('f-khach').value='';
   document.getElementById('f-kg').value='';
   document.getElementById('f-debt').value='';
   
+  saveToLocalStorage();
   renderRecentTx();
   renderLotStrip();
   renderCustomerList();
+  renderEmployeeList();
+  updateFormInputsDynamic();
   updateKPIAndLossUI();
   
-  showToast('✅ Đã lưu đơn hàng và cộng dồn nợ vào hệ thống!','var(--green)');
+  showToast('✅ Đã lưu đơn hàng lên hệ thống và Sheets!');
   apiCall({action:"submitOrder", khach, kg, gia, loai, nv, type:sellType, loHang: selLot.name, debt: orderDebt});
 }
 
@@ -701,24 +652,28 @@ function submitLoss(){
   const kg = parseFloat(document.getElementById('l-kg').value)||0;
   const note = document.getElementById('l-note').value.trim();
   
-  if(kg<=0){ showToast('⚠️ Vui lòng nhập khối lượng hao hụt!','var(--orange)'); return; }
+  if(kg<=0){ showToast('⚠️ Số lượng hao hụt phải lớn hơn 0!','var(--orange)'); return; }
   
   let selectedLossLot = LOTS[lotIdx];
   if(selectedLossLot) {
+    if(kg > (selectedLossLot.kg - selectedLossLot.sold)) {
+      showToast('❌ Vượt quá số cân tồn kho thực tế của lô!','var(--red)');
+      return;
+    }
     selectedLossLot.sold += kg; 
   }
   
   globalLoss[loai] += kg;
-  
   document.getElementById('l-kg').value='';
   document.getElementById('l-note').value='';
   
+  saveToLocalStorage();
   renderLotStrip();
   renderLotList();
   updateKPIAndLossUI();
   
-  showToast('✅ Đã trừ kho và lưu hao hụt thành công!','var(--green)');
-  apiCall({action:"submitLoss", loaiLoss: loai, kg, note, loHang: selectedLossLot ? selectedLossLot.name : ''});
+  showToast('🍂 Đã trừ kho số lượng hao hụt thành công!');
+  apiCall({action:"submitLoss", loaiLoss: loai, kg, note, loHang: selectedLossLot ? selectedLossLot.name : 'Không rõ lô'});
 }
 
 function addCustomerSubmit(){
@@ -727,54 +682,64 @@ function addCustomerSubmit(){
   const type = document.getElementById('c-type').value;
   const debt = parseFloat(document.getElementById('c-debt').value)||0;
   
-  if(!name){ showToast('⚠️ Không được bỏ trống tên đối tác!','var(--orange)'); return; }
+  if(!name){ showToast('⚠️ Hãy nhập tên khách hàng!','var(--orange)'); return; }
   
-  CUSTOMERS.push({name, type, phone, buys:0, total:0, debt: debt});
+  CUSTOMERS.push({name, type, phone, total:0, debt: debt});
   closeModal('m-addkh');
   document.getElementById('c-name').value='';
   document.getElementById('c-phone').value='';
   document.getElementById('c-debt').value='';
   
+  saveToLocalStorage();
   renderCustomerList();
+  updateFormInputsDynamic();
   updateKPIAndLossUI();
-  showToast('✅ Đã thêm khách hàng: '+name);
+  showToast('✅ Đã tạo hồ sơ đối tác khách hàng!');
   apiCall({action:"addCustomer", name, phone, type, debt});
 }
 
 function addEmployeeSubmit(){
   const name = document.getElementById('e-name').value.trim();
-  if(!name){ showToast('⚠️ Chưa nhập tên nhân viên!','var(--orange)'); return; }
+  const phone = document.getElementById('e-phone').value.trim();
   
-  EMPLOYEES.push({name, kg:0, avgPrice:0, ref:85000, anomalies:0, status:'ok'});
+  if(!name){ showToast('⚠️ Tên nhân viên không được để trống!','var(--orange)'); return; }
+  
+  EMPLOYEES.push({name, phone: phone, kg:0});
   closeModal('m-addnv');
   document.getElementById('e-name').value='';
+  document.getElementById('e-phone').value='';
+  
+  saveToLocalStorage();
   renderEmployeeList();
-  showToast('✅ Thêm nhân viên thành công!');
-  apiCall({action:"addEmployee", name, phone:""});
+  updateFormInputsDynamic(); // Tự động đồng bộ ngay vào Select Box nhập đơn
+  showToast('✅ Đã liên kết tài khoản cân nhân viên mới!');
+  apiCall({action:"addEmployee", name, phone});
 }
 
 function addLotSubmit(){
   const name = document.getElementById('nl-name').value.trim();
   const kg = parseFloat(document.getElementById('nl-kg').value)||0;
-  const v1 = parseInt(document.getElementById('nl-v1').value)||45000;
-  const v2 = parseInt(document.getElementById('nl-v2').value)||35000;
-  const v3 = parseInt(document.getElementById('nl-v3').value)||25000;
+  const v1 = parseInt(document.getElementById('nl-v1').value)||0;
+  const v2 = parseInt(document.getElementById('nl-v2').value)||0;
+  const v3 = parseInt(document.getElementById('nl-v3').value)||0;
   
-  if(!name || kg<=0){ showToast('⚠️ Nhập tên lô và số kg đầu vào!','var(--orange)'); return; }
+  if(!name || kg<=0){ showToast('⚠️ Nhập tên danh định lô sầu riêng và tổng số KG!','var(--orange)'); return; }
 
-  const s1 = Math.round(v1*1.3), s2 = Math.round(v2*1.3), s3 = Math.round(v3*1.3);
+  const s1 = Math.round(v1*1.2), s2 = Math.round(v2*1.2), s3 = Math.round(v3*1.2);
   const newLot = {id:String.fromCharCode(65+LOTS.length), name, kg, sold:0, voc:{1:v1,2:v2,3:v3}, san:{1:s1,2:s2,3:s3}, open:true};
   
   LOTS.push(newLot);
+  if(!selLot) selLot = newLot;
   closeModal('m-addlot');
   
+  document.getElementById('nl-name').value='';
+  document.getElementById('nl-kg').value='';
+
+  saveToLocalStorage();
   renderLotStrip();
   renderLotList();
   updateLotSelectOptions();
-  
-  showToast('✅ Đã mở lô mới thành công!');
-  document.getElementById('nl-name').value='';
-  document.getElementById('nl-kg').value='';
+  showToast('✅ Đã mở kho tiếp nhận lô hàng!');
   apiCall({action:"addLot", name, kg, v1, v2, v3});
 }
 
@@ -797,8 +762,8 @@ function renderLotStrip(){
   container.innerHTML = LOTS.map((l,i)=>`
     <div class="lot-card ${selLot && selLot.id===l.id?'active':''}" onclick="selectLot(${i})">
       <div class="lot-status ${l.open?'open':'closed'}"></div>
-      <div style="font-weight:700;font-size:15px;margin-bottom:2px;">${l.name}</div>
-      <div style="font-size:12px;color:var(--muted)">Đã xuất: <span style="color:var(--text);font-weight:600;">${l.sold}/${l.kg} kg</span></div>
+      <div style="font-weight:700;font-size:14px;margin-bottom:2px;">${l.name}</div>
+      <div style="font-size:11px;color:var(--muted)">Đã xuất: <span style="color:var(--text);font-weight:700;">${l.sold}/${l.kg} kg</span></div>
     </div>
   `).join('');
 }
@@ -806,15 +771,16 @@ function renderLotStrip(){
 function renderRecentTx(){
   const container = document.getElementById('recent-tx-list');
   if(!container) return;
+  if(RECENT_TX.length === 0){ container.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">Chưa phát sinh đơn hàng nào hôm nay</div>'; return; }
   container.innerHTML = RECENT_TX.map(t=>`
-    <div class="tx-row ${t.ok?'':'bad'}">
+    <div class="tx-row">
       <div>
         <div style="font-weight:600;font-size:14px;">${t.khach}</div>
-        <div style="font-size:11px;color:var(--muted)">Loại ${t.loai} • ${t.time} • NV: ${t.nv}</div>
+        <div style="font-size:11px;color:var(--muted)">${t.time} • Loại ${t.loai} • Cân: ${t.nv}</div>
       </div>
       <div style="text-align:right">
         <div style="font-weight:700;font-size:14px;color:var(--gold)">${t.kg} kg</div>
-        <div style="font-size:11px;color:var(--muted)">${(t.gia/1000).toFixed(0)}k/kg</div>
+        <div style="font-size:11px;color:var(--muted)">${(t.gia).toLocaleString()} đ</div>
       </div>
     </div>
   `).join('');
@@ -824,15 +790,14 @@ function renderEmployeeList(){
   const container = document.getElementById('employee-list');
   if(!container) return;
   container.innerHTML = EMPLOYEES.map(e=>`
-    <div class="tx-row" style="background:var(--card2);border-radius:10px;margin-bottom:8px;border:1px solid ${e.status=='bad'?'var(--red)':e.status=='warn'?'var(--orange)':'transparent'}">
+    <div class="tx-row" style="background:var(--card2);border-radius:10px;">
       <div>
         <div style="font-weight:700;">${e.name}</div>
-        <div style="font-size:12px;color:var(--muted)">Đã cân: ${e.kg} kg • Giá TB: ${e.avgPrice.toLocaleString()} đ</div>
-        ${e.note?`<div style="font-size:11px;color:var(--red);margin-top:4px;">⚠️ ${e.note}</div>`:''}
+        <div style="font-size:12px;color:var(--muted)">Liên hệ: ${e.phone||'Chưa có'}</div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:11px;color:var(--muted)">Sai lệch</div>
-        <div style="font-weight:700;color:${e.anomalies>0?'var(--red)':'var(--green)'}">${e.anomalies} lần</div>
+        <div style="font-size:11px;color:var(--muted)">Đã cân</div>
+        <div style="font-weight:700;color:var(--green)">${e.kg} kg</div>
       </div>
     </div>
   `).join('');
@@ -842,13 +807,13 @@ function renderCustomerList(){
   const container = document.getElementById('customer-list');
   if(!container) return;
   container.innerHTML = CUSTOMERS.map(c=>`
-    <div class="tx-row" style="background:var(--card2);border-radius:10px;margin-bottom:8px;">
+    <div class="tx-row" style="background:var(--card2);border-radius:10px;">
       <div>
         <div style="font-weight:700;">${c.name} <span class="badge ${c.type}">${c.type==='si'?'SỈ':'LẺ'}</span></div>
-        <div style="font-size:12px;color:var(--muted)">SĐT: ${c.phone||'—'} • Tổng mua: ${c.total} kg</div>
+        <div style="font-size:12px;color:var(--muted)">SĐT: ${c.phone||'—'} • Đã mua: ${c.total||0} kg</div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:11px;color:var(--muted)">Nợ gối đầu</div>
+        <div style="font-size:11px;color:var(--muted)">Dư nợ</div>
         <div style="font-weight:700;color:${c.debt>0?'var(--orange)':'var(--text)'}">${c.debt} tr</div>
       </div>
     </div>
@@ -859,25 +824,26 @@ function renderLotList(){
   const container = document.getElementById('lot-list');
   if(!container) return;
   container.innerHTML = LOTS.map(l=>`
-    <div class="tx-row" style="background:var(--card2);border-radius:10px;margin-bottom:8px;">
+    <div class="tx-row" style="background:var(--card2);border-radius:10px;">
       <div>
         <div style="font-weight:700;">${l.name}</div>
-        <div style="font-size:12px;color:var(--muted)">Tổng: ${l.kg} kg • Sỉ Ri6: ${(l.voc[1]/1000).toFixed(0)}k • Lẻ: ${(l.san[1]/1000).toFixed(0)}k</div>
+        <div style="font-size:12px;color:var(--muted)">Tổng: ${l.kg} kg • Vốn L1: ${(l.voc[1]).toLocaleString()}đ</div>
       </div>
       <div style="text-align:right">
         <div style="font-weight:700;color:var(--green)">${(((l.sold||0)/l.kg)*100).toFixed(0)}%</div>
-        <div style="font-size:11px;color:var(--muted)">Đã xuất</div>
+        <div style="font-size:11px;color:var(--muted)">Đã ra hàng</div>
       </div>
     </div>
   `).join('');
 }
 
-function showToast(msg,color='var(--gold)'){
+function showToast(msg,color='var(--green2)'){
   const t = document.getElementById('toast');
   t.textContent = msg; t.style.background = color; t.style.opacity = '1';
   setTimeout(()=>{ t.style.opacity = '0'; },3000);
 }
 
+// KHỞI ĐỘNG CHẠY HỆ THỐNG
 window.onload = function(){
   renderLotStrip();
   renderRecentTx();
@@ -885,6 +851,7 @@ window.onload = function(){
   renderCustomerList();
   renderLotList();
   updateLotSelectOptions();
+  updateFormInputsDynamic();
   updateKPIAndLossUI();
   if(selLot) updateFormPrices();
 };
