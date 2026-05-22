@@ -56,15 +56,16 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 
 /* ── BOTTOM NAV ── */
 .bnav{
-  flex-shrink:0;
-  display:grid;grid-template-columns:repeat(5,1fr);
-  background:var(--card);border-top:1px solid var(--border);
+  position:fixed;bottom:0;left:0;right:0;height:64px;z-index:100;
+  display:grid;grid-template-columns:repeat(6,1fr);
+  background:linear-gradient(to top,#09120b,#111a13);
+  border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom);
 }
-.bni{display:flex;flex-direction:column;align-items:center;padding:8px 4px 6px;cursor:pointer;border:none;background:none;}
-.bni-ico{font-size:22px;line-height:1;}
-.bni-lbl{font-size:10px;color:var(--muted);font-weight:600;margin-top:2px;}
-.bni.on .bni-lbl{color:var(--gold);}
-.bni.on .bni-ico{filter:drop-shadow(0 0 5px var(--gold));}
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);text-decoration:none;cursor:pointer;}
+.bni-ico{font-size:20px;margin-bottom:2px;transition:transform .2s;}
+.bni-lbl{font-size:10px;font-weight:600;}
+.bni.on{color:var(--gold);}
+.bni.on .bni-ico{transform:translateY(-2px);filter:drop-shadow(0 2px 8px rgba(245,200,66,.4));}
 
 /* ── KPI GRID ── */
 .kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
@@ -94,7 +95,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .sec-ttl{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:6px;}
 .btn-xs{background:var(--card2);border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;}
 
-/* ── LOT PILLS ── */
+/* ── LOT STRIP ── */
 .lot-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;}
 .lot-strip::-webkit-scrollbar{display:none;}
 .lot-card{
@@ -103,13 +104,11 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   transition:border-color .2s;
 }
 .lot-card.active{border-color:var(--gold);background:rgba(245,200,66,.08);}
-.lot-status {
-  width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px;
-}
-.lot-status.open { background: var(--green); }
-.lot-status.closed { background: var(--muted); }
+.lot-status{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle;}
+.lot-status.open{background:var(--green);}
+.lot-status.closed{background:var(--muted);}
 
-/* ── DONUT ── */
+/* ── DONUT CHART ── */
 .donut-wrap{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:14px;padding:14px;border:1px solid var(--border);}
 .donut-box{position:relative;width:96px;height:96px;flex-shrink:0;}
 .donut-box svg{width:100%;height:100%;transform:rotate(-90deg);}
@@ -122,17 +121,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .dleg-name{font-size:12px;flex:1;}
 .dleg-val{font-size:12px;font-weight:700;}
 
-/* ── BAR CHART ── */
-.bchart{background:var(--card);border-radius:14px;padding:14px;border:1px solid var(--border);}
-.brow{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
-.brow:last-child{margin-bottom:0;}
-.blbl{font-size:11px;color:var(--muted);width:56px;text-align:right;flex-shrink:0;}
-.btrack{flex:1;height:22px;background:var(--card2);border-radius:6px;overflow:hidden;}
-.bfill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:8px;min-width:40px;}
-.bfill span{font-size:11px;font-weight:700;color:#fff;white-space:nowrap;}
-.bamt{font-size:11px;font-weight:700;color:var(--gold);width:48px;flex-shrink:0;text-align:right;}
-
-/* ── TX LIST ── */
+/* ── TRANSACTION LIST ── */
 .txlist{display:flex;flex-direction:column;gap:8px;}
 .tx-row{
   background:var(--card);border-radius:12px;padding:11px 13px;
@@ -142,7 +131,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .tx-row.bad{border-left-color:var(--red);background:rgba(255,79,79,.06);}
 .tx-row.warn{border-left-color:var(--orange);}
 
-/* ── FORM ── */
+/* ── FORM CONTROL ── */
 .fcard{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);}
 .frow{margin-bottom:13px;}
 .flbl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px;}
@@ -157,24 +146,24 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .fgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 
-/* Type toggle */
-.type-toggle{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1.5px solid var(--border);}
+/* Sỉ lẻ toggle */
+.type-toggle{display:flex;border-radius:10px;overflow:hidden;border:1.5px solid var(--border);}
 .tt-btn{flex:1;padding:13px 8px;background:var(--card2);border:none;color:var(--muted);font-family:'Be Vietnam Pro',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;}
 .tt-btn.active{background:rgba(63,220,132,.15);color:var(--green);}
 #btn-si.active{background:rgba(245,200,66,.15);color:var(--gold);}
 
-/* Fraud box */
+/* Cảnh báo đỏ */
 .fraud-box{display:none;background:rgba(255,79,79,.12);border:1.5px solid var(--red);border-radius:10px;padding:11px 13px;margin-bottom:12px;}
 .fb-ttl{color:var(--red);font-weight:700;font-size:13px;margin-bottom:4px;}
 .fb-msg{font-size:12px;color:#ff9090;}
 
-/* Total preview */
+/* Xem trước tiền */
 .total-prev{background:var(--card2);border-radius:10px;padding:12px;text-align:center;margin-bottom:14px;}
 .tp-lbl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;}
 .tp-val{font-family:'Baloo 2',cursive;font-size:30px;font-weight:800;color:var(--gold);line-height:1.1;}
 .tp-detail{font-size:11px;color:var(--muted);margin-top:3px;}
 
-/* Lot selector in form */
+/* Ô Lô đang chọn */
 .lot-sel-box{background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;}
 .ls-active{border-color:var(--green);}
 .ls-row{display:flex;justify-content:space-between;align-items:center;}
@@ -183,12 +172,12 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .ls-info{font-size:11px;color:var(--muted);margin-top:3px;}
 .ls-change{font-size:11px;color:var(--blue);cursor:pointer;text-decoration:underline;}
 
-/* Submit btn */
+/* Nút Submit */
 .btn-submit{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:12px;padding:15px;color:#1a1100;font-family:'Baloo 2',cursive;font-size:17px;font-weight:800;cursor:pointer;transition:transform .1s;margin-top:2px;}
 .btn-submit:active{transform:scale(.98);}
 .btn-submit.green-btn{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;}
 
-/* ── LOSS TABLE ── */
+/* ── BẢNG HAO HỤT ── */
 .ltable{background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border);}
 .lthd{display:grid;grid-template-columns:1.8fr 1fr 1fr 1.2fr;gap:6px;padding:9px 13px;background:var(--card2);}
 .lthd-c{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;}
@@ -201,22 +190,20 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .lpct.warn{color:var(--orange);}
 .lpct.bad{color:var(--red);}
 
-/* ── CUSTOMER & BADGE ── */
-.badge { display:inline-block; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:700; margin-left:5px; }
-.badge.si { background: rgba(245,200,66,.15); color: var(--gold); }
-.badge.le { background: rgba(61,220,132,.15); color: var(--green); }
+/* Badge */
+.badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;margin-left:5px;}
+.badge.si{background:rgba(245,200,66,.15);color:var(--gold);}
+.badge.le{background:rgba(61,220,132,.15);color:var(--green);}
 
-/* ── MODAL ── */
+/* ── MODAL OVERLAY ── */
 .moverlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:flex-end;}
 .msheet{background:var(--card);border-radius:20px 20px 0 0;padding:18px 16px 30px;width:100%;max-height:85vh;overflow-y:auto;}
 .mhandle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px;}
 .mttl{font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;color:var(--gold);margin-bottom:14px;}
 .mclose{float:right;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--green2);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
-
-.warn-rule{font-size:11px;color:var(--muted);margin-top:6px;}
+/* ── TOAST CONTAINER ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green2);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -226,233 +213,238 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
     <span class="hdr-icon">🌳</span>
     <div>
       <div class="hdr-name">Vựa Sầu Riêng</div>
-      <div class="hdr-sub" id="hdr-sub">Hệ thống quản lý ngầm</div>
+      <div class="hdr-sub">Hệ thống quản lý ngầm</div>
     </div>
   </div>
   <div class="hdr-right">
-    <div class="hdr-date" id="hdr-date">Thứ Sáu, 22/05</div>
-    <button class="bell-btn" onclick="openModal('m-alerts')" id="bellBtn">
-      🔔<span class="bdg" id="alertCount">3</span>
+    <div class="hdr-date">Thứ Sáu, 22/05</div>
+    <button class="bell-btn" onclick="openModal('m-alerts')">
+      🔔<span class="bdg">3</span>
     </button>
   </div>
 </div>
 
 <div class="scroll-area" id="scrollArea">
 
-<div class="page active" id="pg-home">
-  <div class="kgrid" id="kpiGrid"></div>
-
-  <div class="sec">
-    <div class="sec-hd">
-      <div class="sec-ttl">🏷️ Phân Loại Hôm Nay</div>
-      <button class="btn-xs" onclick="gotoTab(1)">+ Nhập</button>
+  <div class="page active" id="pg-home">
+    <div class="kgrid">
+      <div class="kcard c-gold">
+        <div class="k-lbl">Doanh Thu</div>
+        <div class="k-val gold">92.4 <span style="font-size:14px">tr</span></div>
+        <div class="k-trend up">▲ +12% so hôm qua</div>
+      </div>
+      <div class="kcard c-green">
+        <div class="k-lbl">Sản Lượng Bán</div>
+        <div class="k-val green">1,155 <span style="font-size:14px">kg</span></div>
+        <div class="k-unit">Kho còn: 245 kg</div>
+      </div>
+      <div class="kcard c-red">
+        <div class="k-lbl">Nợ Chưa Thu</div>
+        <div class="k-val red">10.5 <span style="font-size:14px">tr</span></div>
+        <div class="k-trend dn">⚠️ 3 khách quá hạn</div>
+      </div>
+      <div class="kcard c-orange">
+        <div class="k-lbl">Hao Hụt / Lỗi</div>
+        <div class="k-val orange">85 <span style="font-size:14px">kg</span></div>
+        <div class="k-unit">Tỷ lệ: 6.8% (Cao)</div>
+      </div>
     </div>
-    <div class="donut-wrap">
-      <div class="donut-box">
-        <svg viewBox="0 0 36 36">
-          <circle cx="18" cy="18" r="15.915" fill="none" stroke="#1e2e22" stroke-width="3.5"/>
-          <circle cx="18" cy="18" r="15.915" fill="none" stroke="#f5c842" stroke-width="3.5" stroke-dasharray="35 65" stroke-dashoffset="0"/>
-          <circle cx="18" cy="18" r="15.915" fill="none" stroke="#3ddc84" stroke-width="3.5" stroke-dasharray="45 55" stroke-dashoffset="-35"/>
-          <circle cx="18" cy="18" r="15.915" fill="none" stroke="#7a9b80" stroke-width="3.5" stroke-dasharray="14 86" stroke-dashoffset="-80"/>
-          <circle cx="18" cy="18" r="15.915" fill="none" stroke="#ff4f4f" stroke-width="3.5" stroke-dasharray="6 94" stroke-dashoffset="-94"/>
-        </svg>
-        <div class="donut-ctr"><span class="dc-val" id="donut-total">1,240</span><span class="dc-lbl">kg</span></div>
+
+    <div class="sec">
+      <div class="sec-hd">
+        <div class="sec-ttl">🏷️ Phân Loại Hôm Nay</div>
       </div>
-      <div class="dleg">
-        <div class="dleg-row"><div class="dleg-dot" style="background:#f5c842"></div><span class="dleg-name">🥇 Loại 1</span><span class="dleg-val" style="color:#f5c842">434 kg</span></div>
-        <div class="dleg-row"><div class="dleg-dot" style="background:#3ddc84"></div><span class="dleg-name">🥈 Loại 2</span><span class="dleg-val" style="color:#3ddc84">558 kg</span></div>
-        <div class="dleg-row"><div class="dleg-dot" style="background:#7a9b80"></div><span class="dleg-name">🥉 Loại 3</span><span class="dleg-val" style="color:#7a9b80">163 kg</span></div>
-        <div class="dleg-row"><div class="dleg-dot" style="background:#ff4f4f"></div><span class="dleg-name">🍂 Hao hụt</span><span class="dleg-val" style="color:#ff4f4f">85 kg</span></div>
+      <div class="donut-wrap">
+        <div class="donut-box">
+          <svg viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#1e2e22" stroke-width="3.5"/>
+            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#f5c842" stroke-width="3.5" stroke-dasharray="35 65" stroke-dashoffset="0"/>
+            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#3ddc84" stroke-width="3.5" stroke-dasharray="45 55" stroke-dashoffset="-35"/>
+            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#7a9b80" stroke-width="3.5" stroke-dasharray="14 86" stroke-dashoffset="-80"/>
+            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#ff4f4f" stroke-width="3.5" stroke-dasharray="6 94" stroke-dashoffset="-94"/>
+          </svg>
+          <div class="donut-ctr"><span class="dc-val">1,240</span><span class="dc-lbl">kg</span></div>
+        </div>
+        <div class="dleg">
+          <div class="dleg-row"><div class="dleg-dot" style="background:#f5c842"></div><span class="dleg-name">🥇 Loại 1</span><span class="dleg-val" style="color:#f5c842">434 kg</span></div>
+          <div class="dleg-row"><div class="dleg-dot" style="background:#3ddc84"></div><span class="dleg-name">🥈 Loại 2</span><span class="dleg-val" style="color:#3ddc84">558 kg</span></div>
+          <div class="dleg-row"><div class="dleg-dot" style="background:#7a9b80"></div><span class="dleg-name">🥉 Loại 3</span><span class="dleg-val" style="color:#7a9b80">163 kg</span></div>
+          <div class="dleg-row"><div class="dleg-dot" style="background:#ff4f4f"></div><span class="dleg-name">🍂 Hao hụt</span><span class="dleg-val" style="color:#ff4f4f">85 kg</span></div>
+        </div>
       </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-hd">
+        <div class="sec-ttl">🧾 Giao Dịch Gần Đây</div>
+        <button class="btn-xs" onclick="gotoTab(1)">Thêm mới</button>
+      </div>
+      <div class="txlist" id="recent-tx-list"></div>
     </div>
   </div>
 
-  <div class="sec">
-    <div class="sec-hd">
-      <div class="sec-ttl">🧾 Giao Dịch Gần Đây</div>
-      <button class="btn-xs" onclick="gotoTab(1)">Thêm mới</button>
+  <div class="page" id="pg-nhap">
+    <div class="sec">
+      <div class="sec-ttl" style="margin-bottom:12px">📦 Chọn Lô Hàng</div>
+      <div class="lot-strip" id="lot-strip"></div>
     </div>
-    <div class="txlist" id="recent-tx-list"></div>
-  </div>
-</div>
 
-<div class="page" id="pg-nhap">
-  <div class="sec">
-    <div class="sec-ttl" style="margin-bottom:12px">📦 Chọn Lô Hàng</div>
-    <div class="lot-strip" id="lot-strip"></div>
-  </div>
-
-  <div class="sec">
-    <div class="sec-ttl" style="margin-bottom:12px">📝 Nhập Giao Dịch</div>
-    <div class="fcard">
-      <div class="frow">
-        <label class="flbl">📦 Lô Đang Bán</label>
-        <div class="lot-sel-box ls-active" id="formLotBox">
-          <div class="ls-row">
-            <span class="ls-name" id="formLotName">Lô A — 22/5</span>
-            <span class="ls-gia" id="formLotGia">Vốn L1: 65k/kg</span>
-          </div>
-          <div class="ls-row" style="margin-top:4px;">
-            <span class="ls-info" id="formLotInfo">Còn: 380 kg — Loại 1</span>
-            <span class="ls-change" onclick="gotoTab(5)">Đổi lô ▾</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="frow">
-        <label class="flbl">🛒 Loại Bán</label>
-        <div class="type-toggle">
-          <button class="tt-btn active" id="btn-le" onclick="setSellType('le')">🧺 Lẻ</button>
-          <button class="tt-btn" id="btn-si" onclick="setSellType('si')">🚛 Sỉ</button>
-        </div>
-      </div>
-
-      <div class="ibox" id="giaRefBox">
-        <div class="ibox-ttl">📌 Giá Sàn Lô Này</div>
-        <div class="ibox-row" id="giaRefRow">
-          <span class="ptag ref">L1 Lẻ: 85k</span>
-          <span class="ptag ref">L2 Lẻ: 72k</span>
-          <span class="ptag ref">L3 Lẻ: 55k</span>
-        </div>
-        <div class="warn-rule">⚠️ Bán dưới giá vốn của lô sẽ có cảnh báo đỏ chặn lại!</div>
-      </div>
-
-      <div class="fgrid">
+    <div class="sec">
+      <div class="sec-ttl" style="margin-bottom:12px">📝 Nhập Giao Dịch</div>
+      <div class="fcard">
         <div class="frow">
-          <label class="flbl">🏷️ Loại Sầu</label>
-          <select class="fsel" id="f-loai" onchange="updateFormPrices()">
-            <option value="1">🥇 Loại 1</option>
-            <option value="2">🥈 Loại 2</option>
-            <option value="3">🥉 Loại 3</option>
+          <label class="flbl">📦 Lô Đang Bán</label>
+          <div class="lot-sel-box ls-active">
+            <div class="ls-row">
+              <span class="ls-name" id="cur-lot-name">Lô A — Ri6 (22/5)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="frow">
+          <label class="flbl">🛒 Loại Bán</label>
+          <div class="type-toggle">
+            <button class="tt-btn active" id="btn-le" onclick="setSellType('le')">🧺 Lẻ</button>
+            <button class="tt-btn" id="btn-si" onclick="setSellType('si')">🚛 Sỉ</button>
+          </div>
+        </div>
+
+        <div class="fgrid">
+          <div class="frow">
+            <label class="flbl">🏷️ Loại Sầu</label>
+            <select class="fsel" id="f-loai" onchange="updateFormPrices()">
+              <option value="1">🥇 Loại 1</option>
+              <option value="2">🥈 Loại 2</option>
+              <option value="3">🥉 Loại 3</option>
+            </select>
+          </div>
+          <div class="frow">
+            <label class="flbl">⚖️ Số KG</label>
+            <input class="finput" id="f-kg" type="number" placeholder="0" oninput="calcTotal()">
+          </div>
+        </div>
+
+        <div class="frow">
+          <label class="flbl">💵 Giá Bán / KG (đồng)</label>
+          <input class="finput" id="f-gia" type="number" oninput="calcTotal()">
+        </div>
+
+        <div class="frow">
+          <label class="flbl">👤 Khách Hàng</label>
+          <input class="finput" id="f-khach" type="text" placeholder="Tên khách hàng...">
+        </div>
+
+        <div class="frow">
+          <label class="flbl">👷 Nhân Viên Cân</label>
+          <select class="fsel" id="f-nv">
+            <option>Minh</option>
+            <option>Tuấn</option>
+            <option>Hà</option>
+            <option>Dũng</option>
           </select>
         </div>
-        <div class="frow">
-          <label class="flbl">⚖️ Số KG</label>
-          <input class="finput" id="f-kg" type="number" placeholder="100" min="1" inputmode="numeric" oninput="calcTotal()">
+
+        <div class="fraud-box" id="fraud-box">
+          <div class="fb-ttl">🚨 CẢNH BÁO XẢ HÀNG GIÁ THẤP</div>
+          <div class="fb-msg" id="fraud-msg"></div>
         </div>
-      </div>
 
-      <div class="frow">
-        <label class="flbl">💵 Giá Bán / KG (đồng)</label>
-        <input class="finput" id="f-gia" type="number" placeholder="85000" inputmode="numeric" style="font-size:18px;font-weight:700;" oninput="calcTotal()">
-      </div>
+        <div class="total-prev">
+          <div class="tp-lbl">Tổng Tiền Đơn Hàng</div>
+          <div class="tp-val" id="total-val">—</div>
+          <div class="tp-detail" id="total-detail"></div>
+        </div>
 
-      <div class="frow">
-        <label class="flbl">👤 Khách Hàng</label>
-        <input class="finput" id="f-khach" type="text" placeholder="Tên khách..." list="khach-dl">
-        <datalist id="khach-dl">
-          <option value="Anh Hùng">
-          <option value="Anh Tâm">
-          <option value="Chú Bình">
-          <option value="Cô Hoa">
-          <option value="Chị Loan">
-        </list>
+        <button class="btn-submit" onclick="submitOrder()">💾 LƯU ĐƠN HÀNG</button>
       </div>
+    </div>
 
-      <div class="frow">
-        <label class="flbl">👷 Nhân Viên</label>
-        <select class="fsel" id="f-nv">
-          <option>Minh</option><option>Tuấn</option><option>Hà</option><option>Dũng</option>
-        </select>
+    <div class="sec" style="margin-top:20px;">
+      <div class="sec-ttl" style="margin-bottom:12px">🍂 Ghi Nhận Hao Hụt Nhanh</div>
+      <div class="fcard">
+        <div class="fgrid">
+          <div class="frow">
+            <label class="flbl">📋 Loại Thất Thoát</label>
+            <select class="fsel" id="l-loai">
+              <option value="1">🥇 Loại 1</option>
+              <option value="2">🥈 Loại 2</option>
+              <option value="3">🥉 Loại 3</option>
+            </select>
+          </div>
+          <div class="frow">
+            <label class="flbl">⚖️ Khối Lượng (kg)</label>
+            <input class="finput" id="l-kg" type="number" placeholder="0">
+          </div>
+        </div>
+        <div class="frow">
+          <label class="flbl">📌 Ghi Chú Lý Do</label>
+          <input class="finput" id="l-note" type="text" placeholder="Thối đầu, chim khoét, sóc cắn...">
+        </div>
+        <button class="btn-submit green-btn" onclick="submitLoss()">💾 LƯU HAO HỤT</button>
       </div>
-
-      <div class="fraud-box" id="fraud-box">
-        <div class="fb-ttl">🚨 GIÁ QUÁ THẤP — CẦN XÁC NHẬN!</div>
-        <div class="fb-msg" id="fraud-msg"></div>
-      </div>
-
-      <div class="total-prev">
-        <div class="tp-lbl">Tổng Tiền</div>
-        <div class="tp-val" id="total-val">—</div>
-        <div class="tp-detail" id="total-detail"></div>
-      </div>
-
-      <button class="btn-submit" onclick="submitOrder()">💾 LƯU GIAO DỊCH</button>
     </div>
   </div>
 
-  <div class="sec" style="margin-top:15px;">
-    <div class="sec-ttl" style="margin-bottom:12px">🍂 Ghi Nhận Hao Hụt / Trả Về</div>
-    <div class="fcard">
-      <div class="fgrid">
-        <div class="frow">
-          <label class="flbl">📋 Loại</label>
-          <select class="fsel" id="l-loai">
-            <option value="haohut">🍂 Hao Hụt</option>
-            <option value="tra">↩️ Trả Về</option>
-          </select>
+  <div class="page" id="pg-haohut">
+    <div class="sec">
+      <div class="sec-ttl">📊 Thống Kê Thất Thoát</div>
+      <div class="ltable" style="margin-top:10px;">
+        <div class="lthd">
+          <div class="lthd-c">Phân Loại</div>
+          <div class="lthd-c">Nhập (kg)</div>
+          <div class="lthd-c">Hao (kg)</div>
+          <div class="lthd-c">Tỷ Lệ</div>
         </div>
-        <div class="frow">
-          <label class="flbl">⚖️ Số KG</label>
-          <input class="finput" id="l-kg" type="number" placeholder="20" inputmode="numeric">
+        <div class="lrow">
+          <div><div class="lr-name">🥇 Loại 1</div><div class="lr-sub">Ri6 tuyển</div></div>
+          <div class="lr-c">500</div><div class="lr-c">24</div>
+          <div class="lr-c"><span class="lpct ok">4.8%</span></div>
         </div>
-      </div>
-      <div class="frow">
-        <label class="flbl">📌 Lý Do</label>
-        <input class="finput" id="l-note" type="text" placeholder="VD: quả thối, sai phân loại...">
-      </div>
-      <button class="btn-submit green-btn" onclick="submitLoss()">💾 LƯU HAO HỤT</button>
-    </div>
-  </div>
-</div>
-
-<div class="page" id="pg-haohut">
-  <div style="background:rgba(255,159,67,.1);border:1px solid var(--orange);border-radius:12px;padding:11px 13px;margin-bottom:14px;display:flex;gap:10px;align-items:center;">
-    <span style="font-size:22px">⚠️</span>
-    <div><div style="font-size:13px;font-weight:700;color:var(--orange)">Hao hụt Loại 1 cao bất thường!</div>
-    <div style="font-size:12px;color:var(--muted)">8.5% hôm nay — ngưỡng tối đa 5%</div></div>
-  </div>
-
-  <div class="sec">
-    <div class="sec-ttl" style="margin-bottom:10px">📊 Tỷ Lệ Hao Hụt Theo Loại</div>
-    <div class="ltable">
-      <div class="lthd">
-        <div class="lthd-c">Loại</div>
-        <div class="lthd-c">Nhập (kg)</div>
-        <div class="lthd-c">Bán (kg)</div>
-        <div class="lthd-c">Hao Hụt</div>
-      </div>
-      <div class="lrow">
-        <div><div class="lr-name">🥇 Loại 1</div><div class="lr-sub">Vốn: 65k/kg</div></div>
-        <div class="lr-c">480</div><div class="lr-c">434</div>
-        <div class="lr-c"><span class="lpct bad">8.5% ⚠️</span><div style="font-size:10px;color:var(--muted)">41 kg</div></div>
+        <div class="lrow">
+          <div><div class="lr-name">🥈 Loại 2</div><div class="lr-sub">Hàng xô khá</div></div>
+          <div class="lr-c">600</div><div class="lr-c">48</div>
+          <div class="lr-c"><span class="lpct warn">8.0%</span></div>
+        </div>
+        <div class="lrow">
+          <div><div class="lr-name">🥉 Loại 3</div><div class="lr-sub">Hàng dạt kem</div></div>
+          <div class="lr-c">200</div><div class="lr-c">13</div>
+          <div class="lr-c"><span class="lpct bad">6.5%</span></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="page" id="pg-nv">
-  <div class="sec-hd">
-    <div class="sec-ttl">👥 Danh Sách Nhân Viên</div>
-    <button class="btn-xs" onclick="openModal('m-addnv')">+ Thêm Nhân Viên</button>
-  </div>
-  <div id="employee-list"></div>
-</div>
-
-<div class="page" id="pg-kh">
-  <div class="sec">
+  <div class="page" id="pg-nv">
     <div class="sec-hd">
-      <div class="sec-ttl">👥 Danh Sách Khách Hàng</div>
+      <div class="sec-ttl">👥 Giám Sát Nhân Viên</div>
+      <button class="btn-xs" onclick="openModal('m-addnv')">+ Thêm NV</button>
+    </div>
+    <div class="txlist" id="employee-list"></div>
+  </div>
+
+  <div class="page" id="pg-kh">
+    <div class="sec-hd">
+      <div class="sec-ttl">👥 Quản Lý Khách Hàng</div>
       <button class="btn-xs" onclick="openModal('m-addkh')">+ Thêm Khách</button>
     </div>
-    <div id="customer-list"></div>
+    <div class="txlist" id="customer-list"></div>
   </div>
-</div>
 
-<div class="page" id="pg-lo">
-  <div class="sec-hd" style="margin-bottom:12px;">
-    <div class="sec-ttl">📦 Quản Lý Lô Hàng</div>
-    <button class="btn-xs" onclick="openModal('m-addlot')">+ Nhập Lô</button>
+  <div class="page" id="pg-lo">
+    <div class="sec-hd">
+      <div class="sec-ttl">📦 Kho Lô Hàng Sầu Riêng</div>
+      <button class="btn-xs" onclick="openModal('m-addlot')">+ Thêm Lô</button>
+    </div>
+    <div class="txlist" id="lot-list"></div>
   </div>
-  <div id="lot-list"></div>
-</div>
 
 </div><div class="bnav">
-  <button class="bni on" id="nav0" onclick="gotoTab(0)"><span class="bni-ico">📊</span><span class="bni-lbl">Tổng Quan</span></button>
-  <button class="bni" id="nav1" onclick="gotoTab(1)"><span class="bni-ico">📝</span><span class="bni-lbl">Nhập Đơn</span></button>
-  <button class="bni" id="nav2" onclick="gotoTab(2)"><span class="bni-ico">⚖️</span><span class="bni-lbl">Hao Hụt</span></button>
-  <button class="bni" id="nav3" onclick="gotoTab(3)"><span class="bni-ico">👷</span><span class="bni-lbl">Nhân Viên</span></button>
-  <button class="bni" id="nav4" onclick="gotoTab(4)"><span class="bni-ico">👥</span><span class="bni-lbl">Khách</span></button>
+  <div class="bni on" id="nav0" onclick="gotoTab(0)"><span class="bni-ico">📊</span><span class="bni-lbl">Tổng Quan</span></div>
+  <div class="bni" id="nav1" onclick="gotoTab(1)"><span class="bni-ico">📝</span><span class="bni-lbl">Nhập Đơn</span></div>
+  <div class="bni" id="nav2" onclick="gotoTab(2)"><span class="bni-ico">⚖️</span><span class="bni-lbl">Hao Hụt</span></div>
+  <div class="bni" id="nav3" onclick="gotoTab(3)"><span class="bni-ico">👷</span><span class="bni-lbl">Nhân Viên</span></div>
+  <div class="bni" id="nav4" onclick="gotoTab(4)"><span class="bni-ico">👥</span><span class="bni-lbl">Khách</span></div>
+  <div class="bni" id="nav5" onclick="gotoTab(5)"><span class="bni-ico">📦</span><span class="bni-lbl">Lô Hàng</span></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -461,20 +453,20 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   <div class="msheet">
     <div class="mhandle"></div>
     <button class="mclose" onclick="closeModal('m-addkh')">✕</button>
-    <div class="mttl">👤 Thêm Khách Hàng Mới</div>
+    <div class="mttl">👤 Thêm Đối Tác Mới</div>
     <div class="frow">
-      <label class="flbl">👤 Tên Khách Hàng</label>
-      <input class="finput" id="c-name" placeholder="Nhập tên khách hàng...">
+      <label class="flbl">Tên khách hàng</label>
+      <input class="finput" id="c-name" placeholder="Ví dụ: Anh Sáu Lộc...">
     </div>
     <div class="frow">
-      <label class="flbl">📞 Số Điện Thoại</label>
-      <input class="finput" id="c-phone" placeholder="Nhập SĐT...">
+      <label class="flbl">Số điện thoại</label>
+      <input class="finput" id="c-phone" placeholder="Nhập số liên hệ...">
     </div>
     <div class="frow">
-      <label class="flbl">🏷️ Phân Loại Khách</label>
+      <label class="flbl">Phân nhóm khách</label>
       <select class="fsel" id="c-type">
-        <option value="le">Khách mua lẻ</option>
-        <option value="si">Khách mua sỉ</option>
+        <option value="le">Basket Khách Lẻ</option>
+        <option value="si">Chuyên sỉ thùng / Container</option>
       </select>
     </div>
     <button class="btn-submit" onclick="addCustomerSubmit()">💾 LƯU KHÁCH HÀNG</button>
@@ -485,14 +477,10 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   <div class="msheet">
     <div class="mhandle"></div>
     <button class="mclose" onclick="closeModal('m-addnv')">✕</button>
-    <div class="mttl">👷 Thêm Nhân Viên Mới</div>
+    <div class="mttl">👷 Tạo Tài Khoản Nhân Viên</div>
     <div class="frow">
-      <label class="flbl">👷 Tên Nhân Viên</label>
-      <input class="finput" id="e-name" placeholder="Nhập tên nhân viên...">
-    </div>
-    <div class="frow">
-      <label class="flbl">📞 Số Điện Thoại</label>
-      <input class="finput" id="e-phone" placeholder="Nhập SĐT nhân viên (nếu có)...">
+      <label class="flbl">Họ tên nhân viên</label>
+      <input class="finput" id="e-name" placeholder="Nhập tên nhân viên đứng cân...">
     </div>
     <button class="btn-submit" onclick="addEmployeeSubmit()">💾 LƯU NHÂN VIÊN</button>
   </div>
@@ -502,48 +490,46 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   <div class="msheet">
     <div class="mhandle"></div>
     <button class="mclose" onclick="closeModal('m-addlot')">✕</button>
-    <div class="mttl">📦 Nhập Lô Hàng Mới</div>
+    <div class="mttl">📦 Mở Lô Hàng Mới Nhập</div>
     <div class="frow">
-      <label class="flbl">🏷️ Tên Lô</label>
-      <input class="finput" id="nl-name" placeholder="VD: Lô C — Ri6 Tiền Giang">
+      <label class="flbl">Tên định danh lô hàng</label>
+      <input class="finput" id="nl-name" placeholder="Ví dụ: Lô C — Ri6 Cái Bè">
     </div>
     <div class="frow">
-      <label class="flbl">⚖️ Tổng KG</label>
-      <input class="finput" id="nl-kg" type="number" placeholder="500" inputmode="numeric">
+      <label class="flbl">Tổng khối lượng (kg)</label>
+      <input class="finput" id="nl-kg" type="number" placeholder="1000">
     </div>
-    <div style="font-size:12px;color:var(--gold);font-weight:700;margin-bottom:8px;">💵 Giá Vốn (đ/kg)</div>
+    <div style="font-size:11px;color:var(--gold);font-weight:700;margin-bottom:8px;text-transform:uppercase;">💵 Giá Vốn Đầu Vào (đ/kg)</div>
     <div class="fgrid3">
       <div class="frow">
-        <label class="flbl">🥇 L1</label>
-        <input class="finput" id="nl-v1" type="number" placeholder="65000" inputmode="numeric">
+        <label class="flbl">🥇 Loại 1</label>
+        <input class="finput" id="nl-v1" type="number" placeholder="65000">
       </div>
       <div class="frow">
-        <label class="flbl">🥈 L2</label>
-        <input class="finput" id="nl-v2" type="number" placeholder="52000" inputmode="numeric">
+        <label class="flbl">🥈 Loại 2</label>
+        <input class="finput" id="nl-v2" type="number" placeholder="52000">
       </div>
       <div class="frow">
-        <label class="flbl">🥉 L3</label>
-        <input class="finput" id="nl-v3" type="number" placeholder="38000" inputmode="numeric">
+        <label class="flbl">🥉 Loại 3</label>
+        <input class="finput" id="nl-v3" type="number" placeholder="38000">
       </div>
     </div>
-    <button class="btn-submit" onclick="addLotSubmit()">💾 LƯU LÔ HÀNG</button>
+    <button class="btn-submit" onclick="addLotSubmit()">💾 KÍCH HOẠT MỞ LÔ</button>
   </div>
 </div>
 
 <script>
-// DÒNG BẮT BUỘC: ĐIỀN LINK APPS SCRIPT CỦA BẠN VÀO ĐÂY ĐỂ ĐỒNG BỘ ĐƯỢC
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPVSE0nvgNKdTowZxtYPH6lZRPHdq47vWUN9k6pQ3oNNnzpXTLKy2qqmq06vuvrAz_-g/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9eKPlUu_v_E0811eIlyp2F42C1qOAtvO_Nskz56Yj167FkL0E98XyO1T1r3I11w6G/exec"; // Link script ngầm của bạn nếu có
 
-<script>
-// ── DATA ──
+// ── VÙNG DATA ──
 const LOTS = [
   {id:'A',name:'Lô A — Ri6 (22/5)',kg:500,sold:380,voc:{1:65000,2:52000,3:38000},san:{1:85000,2:72000,3:55000},open:true},
   {id:'B',name:'Lô B — Musang (18/5)',kg:300,sold:295,voc:{1:58000,2:46000,3:34000},san:{1:78000,2:65000,3:50000},open:false},
 ];
 let selLot = LOTS[0];
-let sellType = 'le'; // 'le' or 'si'
+let sellType = 'le'; 
 
-const ORDERS = []; // Khai báo mảng ORDERS gốc bị thiếu
+const ORDERS = [];
 
 const EMPLOYEES = [
   {name:'Minh',kg:450,avgPrice:87000,ref:85000,anomalies:0,status:'ok'},
@@ -567,48 +553,24 @@ const RECENT_TX = [
   {khach:'Anh Tâm (sỉ)',kg:80,loai:1,gia:58000,nv:'Tuấn',time:'10:05',ok:false},
 ];
 
-// Định nghĩa SCRIPT_URL tránh lỗi chưa khai báo nếu có dùng fetch ngầm
-const SCRIPT_URL = ""; 
-
-// ── CÁC HÀM API KẾT NỐI ĐỒNG BỘ NGẦM GOOGLE SHEETS ──
-function apiAddCustomer(name, phone, type) {
-  if(!SCRIPT_URL) return;
-  const payload = { action: "addCustomer", name: name, phone: phone, type: type };
-  fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
-  .catch(err => console.error("Lỗi đồng bộ khách hàng:", err));
+// ── HÀM ĐẨY SƠ LÊN GG SHEET NGOẠI VI ──
+function apiCall(payload){
+  if(!SCRIPT_URL || SCRIPT_URL.includes("ĐIỀN")) return;
+  fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)}).catch(e=>console.log(e));
 }
 
-function apiAddEmployee(name, phone) {
-  if(!SCRIPT_URL) return;
-  const payload = { action: "addEmployee", name: name, phone: phone };
-  fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
-  .catch(err => console.error("Lỗi đồng bộ nhân viên:", err));
-}
-
-function apiAddLot(name, kg, v1, v2, v3) {
-  if(!SCRIPT_URL) return;
-  const payload = { action: "addLot", name: name, kg: kg, v1: v1, v2: v2, v3: v3 };
-  fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
-  .catch(err => console.error("Lỗi đồng bộ lô hàng:", err));
-}
-
-// ── CORE LOGIC FOR APP ──
+// ── CORE FUNCTIONS CHUẨN GIAO DIỆN GỐC (.tx-row, .lot-card) ──
 function selectLot(idx){
   selLot = LOTS[idx];
-  // Thay đổi để khớp với ID 'formLotName' trong form của bạn
-  if(document.getElementById('formLotName')) {
-    document.getElementById('formLotName').textContent = selLot.name;
-  }
-  closeModal('m-slot');
+  document.getElementById('cur-lot-name').textContent = selLot.name;
+  renderLotStrip();
   updateFormPrices();
 }
 
-function setType(t){ // Đồng bộ tên hàm từ onclick="setType('le')"
+function setSellType(t){
   sellType = t;
-  const btnLe = document.getElementById('tt-le');
-  const btnSi = document.getElementById('tt-si');
-  if(btnLe) btnLe.classList.toggle('sel-le', t==='le');
-  if(btnSi) btnSi.classList.toggle('sel-si', t==='si');
+  document.getElementById('btn-le').classList.toggle('active',t==='le');
+  document.getElementById('btn-si').classList.toggle('active',t==='si');
   updateFormPrices();
 }
 
@@ -617,10 +579,10 @@ function updateFormPrices(){
   const loai = document.getElementById('f-loai').value;
   const price = (sellType==='le') ? selLot.san[loai] : selLot.voc[loai];
   document.getElementById('f-gia').value = price;
-  recalc();
+  calcTotal();
 }
 
-function recalc(){ // Đồng bộ tên hàm từ oninput="recalc()"
+function calcTotal(){
   const kg = parseFloat(document.getElementById('f-kg').value)||0;
   const gia = parseInt(document.getElementById('f-gia').value)||0;
   const loai = document.getElementById('f-loai').value;
@@ -638,7 +600,7 @@ function recalc(){ // Đồng bộ tên hàm từ oninput="recalc()"
     const base = selLot.voc[loai];
     if(gia < base){
       document.getElementById('fraud-box').style.display='block';
-      document.getElementById('fraud-msg').textContent = `CẢNH BÁO: Giá nhập (${gia.toLocaleString()}) thấp hơn giá sàn của Lô (${base.toLocaleString()})!`;
+      document.getElementById('fraud-msg').textContent = `CẢNH BÁO: Giá bán đang thấp hơn cả giá vốn nhập lô (${base.toLocaleString()} đ)!`;
       return;
     }
   }
@@ -647,82 +609,63 @@ function recalc(){ // Đồng bộ tên hàm từ oninput="recalc()"
 
 function submitOrder(){
   const khach = document.getElementById('f-khach').value.trim();
-  const thongTinKg = parseFloat(document.getElementById('f-kg').value)||0;
-  const thongTinGia = parseInt(document.getElementById('f-gia').value)||0;
+  const kg = parseFloat(document.getElementById('f-kg').value)||0;
+  const gia = parseInt(document.getElementById('f-gia').value)||0;
   const loai = parseInt(document.getElementById('f-loai').value)||1;
-  const nv = document.getElementById('f-nv').value.trim();
+  const nv = document.getElementById('f-nv').value;
   
-  if(!khach || thongTinKg<=0 || thongTinGia<=0){
-    showToast('⚠️ Điền đầy đủ: Khách + Số KG + Giá bán','var(--orange)');
+  if(!khach || kg<=0 || gia<=0){
+    showToast('⚠️ Vui lòng nhập đủ thông tin khách, số kg và giá!','var(--orange)');
     return;
   }
   
-  const total = thongTinKg * thongTinGia;
-  ORDERS.push({
-    id: Date.now(),
-    lotId: selLot?selLot.id:'',
-    khach, loai, kg: thongTinKg, gia: thongTinGia, total, nv: nv||'Minh', type: sellType,
-    time: new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})
-  });
-  
-  if(selLot) selLot.sold += thongTinKg;
+  RECENT_TX.unshift({khach: `${khach} (${sellType==='si'?'sỉ':'lẻ'})`, kg, loai, gia, nv, time: new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}), ok: true});
+  if(selLot) selLot.sold += kg;
   
   document.getElementById('f-khach').value='';
   document.getElementById('f-kg').value='';
-  document.getElementById('total-val').textContent='—';
-  document.getElementById('total-detail').textContent='';
-  document.getElementById('fraud-box').style.display='none';
-  
-  renderRecentTx(); 
+  renderRecentTx();
   renderLotStrip();
-  showToast('✅ Đã ghi nhận đơn và đang đồng bộ ngầm...','var(--green)');
-
-  if(SCRIPT_URL) {
-    const payload = {
-      action: "submitOrder", khach, kg: thongTinKg, gia: thongTinGia, loai, nv: nv||"Minh",
-      type: sellType, loHang: selLot?selLot.name:"Không rõ lô"
-    };
-    fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-  }
+  showToast('✅ Đã lưu giao dịch và đồng bộ lên Cloud!','var(--green)');
+  
+  apiCall({action:"submitOrder", khach, kg, gia, loai, nv, type:sellType, loHang: selLot.name});
 }
 
 function submitLoss(){
-  const loaiLoss = document.getElementById('h-loai').value;
-  const kg = parseFloat(document.getElementById('h-kg').value)||0;
-  const note = document.getElementById('h-note').value.trim();
-  if(kg<=0){ showToast('⚠️ Nhập số KG hao hụt','var(--orange)'); return; }
+  const loai = document.getElementById('l-loai').value;
+  const kg = parseFloat(document.getElementById('l-kg').value)||0;
+  const note = document.getElementById('l-note').value.trim();
+  if(kg<=0){ showToast('⚠️ Vui lòng nhập khối lượng hao hụt!','var(--orange)'); return; }
   
-  showToast('✅ Đã ghi nhận hao hụt ngầm...','var(--green)');
-  document.getElementById('h-kg').value='';
-  document.getElementById('h-note').value='';
+  showToast('✅ Đã ghi nhận hao hụt hệ thống!','var(--green)');
+  document.getElementById('l-kg').value='';
+  document.getElementById('l-note').value='';
   
-  if(SCRIPT_URL) {
-    const payload = { action: "submitLoss", loaiLoss, kg, note };
-    fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-  }
+  apiCall({action:"submitLoss", loaiLoss: loai, kg, note});
 }
 
 function addCustomerSubmit(){
-  const name = document.getElementById('c-name') ? document.getElementById('c-name').value.trim() : "Khách ẩn danh";
-  const phone = document.getElementById('c-phone') ? document.getElementById('c-phone').value.trim() : "";
-  const type = document.getElementById('c-type') ? document.getElementById('c-type').value : "le"; 
+  const name = document.getElementById('c-name').value.trim();
+  const phone = document.getElementById('c-phone').value.trim();
+  const type = document.getElementById('c-type').value;
+  if(!name){ showToast('⚠️ Không được bỏ trống tên đối tác!','var(--orange)'); return; }
   
-  CUSTOMERS.push({ name, type, phone, buys:0, total:0, debt:0 });
+  CUSTOMERS.push({name, type, phone, buys:0, total:0, debt:0});
   closeModal('m-addkh');
   renderCustomerList();
-  apiAddCustomer(name, phone, type);
   showToast('✅ Đã thêm khách: '+name);
+  apiCall({action:"addCustomer", name, phone, type});
 }
 
 function addEmployeeSubmit(){
-  const name = document.getElementById('e-name') ? document.getElementById('e-name').value.trim() : "Nhân viên mới";
-  const phone = document.getElementById('e-phone') ? document.getElementById('e-phone').value.trim() : "";
+  const name = document.getElementById('e-name').value.trim();
+  if(!name){ showToast('⚠️ Chưa nhập tên nhân viên!','var(--orange)'); return; }
   
-  EMPLOYEES.push({ name, kg:0, avgPrice:0, ref:85000, anomalies:0, status:'ok' });
+  EMPLOYEES.push({name, kg:0, avgPrice:0, ref:85000, anomalies:0, status:'ok'});
   closeModal('m-addnv');
   renderEmployeeList();
-  apiAddEmployee(name, phone);
-  showToast('✅ Đã thêm nhân viên: '+name);
+  showToast('✅ Thêm nhân viên thành công!');
+  apiCall({action:"addEmployee", name, phone:""});
 }
 
 function addLotSubmit(){
@@ -730,26 +673,25 @@ function addLotSubmit(){
   const kg = parseFloat(document.getElementById('nl-kg').value)||0;
   const v1 = parseInt(document.getElementById('nl-v1').value)||45000;
   const v2 = parseInt(document.getElementById('nl-v2').value)||35000;
-  const v3 = parseInt(document.getElementById('nl-v3').value)||38000;
-  const s1 = parseInt(document.getElementById('nl-s1').value)||Math.round(v1*1.3);
-  const s2 = parseInt(document.getElementById('nl-s2').value)||Math.round(v2*1.3);
-  const s3 = parseInt(document.getElementById('nl-s3').value)||Math.round(v3*1.3);
+  const v3 = parseInt(document.getElementById('nl-v3').value)||25000;
   
-  if(!name){ showToast('⚠️ Nhập tên lô hàng','var(--orange)'); return; }
+  if(!name || kg<=0){ showToast('⚠️ Nhập tên lô và số kg đầu vào!','var(--orange)'); return; }
 
-  const newLot = {id:String.fromCharCode(65+LOTS.length),name,kg,sold:0,voc:{1:v1,2:v2,3:v3},san:{1:s1,2:s2,3:s3},open:true};
-  LOTS.push(newLot);
+  const s1 = Math.round(v1*1.3), s2 = Math.round(v2*1.3), s3 = Math.round(v3*1.3);
+  const newLot = {id:String.fromCharCode(65+LOTS.length), name, kg, sold:0, voc:{1:v1,2:v2,3:v3}, san:{1:s1,2:s2,3:s3}, open:true};
   
+  LOTS.push(newLot);
   closeModal('m-addlot');
   renderLotStrip();
   renderLotList();
-  apiAddLot(name, kg, v1, v2, v3);
-  showToast('✅ Đã thêm lô: '+name);
+  
+  showToast('✅ Đã mở lô mới và đang đồng bộ ngầm...');
   document.getElementById('nl-name').value='';
   document.getElementById('nl-kg').value='';
+  apiCall({action:"addLot", name, kg, v1, v2, v3});
 }
 
-// ── TABS ──
+// ── ĐIỀU HƯỚNG TABS ──
 const pages = ['pg-home','pg-nhap','pg-haohut','pg-nv','pg-kh','pg-lo'];
 function gotoTab(i){
   pages.forEach((p,j)=>{
@@ -758,95 +700,89 @@ function gotoTab(i){
     const nb = document.getElementById('nav'+j);
     if(nb) nb.classList.toggle('on',j===i);
   });
-  document.getElementById('scrollArea').scrollTop=0;
+  document.getElementById('scrollArea').scrollTop = 0;
 }
 
-// ── MODAL ──
-function openModal(id){ document.getElementById(id).style.display='flex'; }
-function closeModal(id){ document.getElementById(id).style.display='none'; }
+function openModal(id){ document.getElementById(id).style.display = 'flex'; }
+function closeModal(id){ document.getElementById(id).style.display = 'none'; }
 
-// ── RENDERS (Đã sửa đúng ID để không lỗi crash) ──
+// ── CÁC HÀM RENDER ÉP BUỘC ĐÚNG CLASS GỐC BAN ĐẦU ĐỂ KHÔNG VỠ GIAO DIỆN ──
 function renderLotStrip(){
-  const container = document.getElementById('lotStrip'); // HTML dùng lotStrip
-  if(!container)return;
+  const container = document.getElementById('lot-strip');
+  if(!container) return;
   container.innerHTML = LOTS.map((l,i)=>`
-    <div class="lot-pill ${selLot && selLot.id===l.id?'sel':''}" onclick="selectLot(${i})">
-      <div class="lp-name">${l.name}</div>
-      <div class="lp-info">Còn: ${l.kg - l.sold} kg</div>
-      <div class="lp-gia">L1: ${(l.san[1]/1000).toFixed(0)}k</div>
+    <div class="lot-card ${selLot && selLot.id===l.id?'active':''}" onclick="selectLot(${i})">
+      <div class="lot-status ${l.open?'open':'closed'}"></div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:2px;">${l.name}</div>
+      <div style="font-size:12px;color:var(--muted)">Đã xuất: <span style="color:var(--text);font-weight:600;">${l.sold}/${l.kg} kg</span></div>
     </div>
   `).join('');
 }
 
 function renderRecentTx(){
-  const container = document.getElementById('recentTx'); // HTML dùng recentTx
-  if(!container)return;
+  const container = document.getElementById('recent-tx-list');
+  if(!container) return;
   container.innerHTML = RECENT_TX.map(t=>`
-    <div class="txc ${t.ok?'':'bad'}">
-      <span class="txc-ico">${t.ok?'🟩':'⛔'}</span>
-      <div class="txc-body">
-        <div class="txc-name">${t.khach}</div>
-        <div class="txc-det">${t.time} · Loại ${t.loai} · NV: ${t.nv}</div>
+    <div class="tx-row ${t.ok?'':'bad'}">
+      <div>
+        <div style="font-weight:600;font-size:14px;">${t.khach}</div>
+        <div style="font-size:11px;color:var(--muted)">Loại ${t.loai} • ${t.time} • NV: ${t.nv}</div>
       </div>
-      <div class="txc-right">
-        <div class="txc-amt">${t.kg} kg</div>
-        <div class="txc-time">${(t.gia/1000).toFixed(0)}k/kg</div>
+      <div style="text-align:right">
+        <div style="font-weight:700;font-size:14px;color:var(--gold)">${t.kg} kg</div>
+        <div style="font-size:11px;color:var(--muted)">${(t.gia/1000).toFixed(0)}k/kg</div>
       </div>
     </div>
   `).join('');
 }
 
 function renderEmployeeList(){
-  const container = document.getElementById('empList'); // HTML dùng empList
-  if(!container)return;
+  const container = document.getElementById('employee-list');
+  if(!container) return;
   container.innerHTML = EMPLOYEES.map(e=>`
-    <div class="ecard e-${e.status}">
-      <div class="ehd">
-        <span class="ename">${e.name}</span>
-        <span class="ebadge ${e.status}">${e.status.toUpperCase()}</span>
+    <div class="tx-row" style="background:var(--card2);border-radius:10px;margin-bottom:8px;border:1px solid ${e.status=='bad'?'var(--red)':e.status=='warn'?'var(--orange)':'transparent'}">
+      <div>
+        <div style="font-weight:700;">${e.name}</div>
+        <div style="font-size:12px;color:var(--muted)">Đã cân: ${e.kg} kg • Giá TB: ${e.avgPrice.toLocaleString()} đ</div>
+        ${e.note?`<div style="font-size:11px;color:var(--red);margin-top:4px;">⚠️ ${e.note}</div>`:''}
       </div>
-      <div class="estats">
-        <div class="estat"><div class="esv">${e.kg}</div><div class="esl">Đã cân (kg)</div></div>
-        <div class="estat"><div class="esv">${(e.avgPrice/1000).toFixed(0)}k</div><div class="esl">Giá TB</div></div>
-        <div class="estat"><div class="esv">${e.anomalies}</div><div class="esl">Sai lệch</div></div>
+      <div style="text-align:right">
+        <div style="font-size:11px;color:var(--muted)">Sai lệch</div>
+        <div style="font-weight:700;color:${e.anomalies>0?'var(--red)':'var(--green)'}">${e.anomalies} lần</div>
       </div>
-      ${e.note?`<div class="eanom">${e.note}</div>`:''}
     </div>
   `).join('');
 }
 
 function renderCustomerList(){
-  const container = document.getElementById('custList'); // HTML dùng custList
-  if(!container)return;
+  const container = document.getElementById('customer-list');
+  if(!container) return;
   container.innerHTML = CUSTOMERS.map(c=>`
-    <div class="ccard">
-      <span class="cc-ico">👤</span>
-      <div class="cc-body">
-        <div class="cc-name">${c.name} <span class="chip ${c.type}">${c.type==='si'?'SỈ':'LẺ'}</span></div>
-        <div class="cc-det">Đơn mua: ${c.buys} · Tổng: ${c.total} kg</div>
+    <div class="tx-row" style="background:var(--card2);border-radius:10px;margin-bottom:8px;">
+      <div>
+        <div style="font-weight:700;">${c.name} <span class="badge ${c.type}">${c.type==='si'?'SỈ':'LẺ'}</span></div>
+        <div style="font-size:12px;color:var(--muted)">SĐT: ${c.phone||'—'} • Tổng mua: ${c.total} kg</div>
       </div>
-      <div class="cc-right">
-        <div class="cc-amt">${c.phone || '—'}</div>
-        ${c.debt>0?`<div class="cc-debt">Nợ: ${c.debt}M</div>`:''}
+      <div style="text-align:right">
+        <div style="font-size:11px;color:var(--muted)">Nợ gối đầu</div>
+        <div style="font-weight:700;color:${c.debt>0?'var(--orange)':'var(--text)'}">${c.debt} tr</div>
       </div>
     </div>
   `).join('');
 }
 
 function renderLotList(){
-  const container = document.getElementById('lotList'); // HTML dùng lotList
-  if(!container)return;
+  const container = document.getElementById('lot-list');
+  if(!container) return;
   container.innerHTML = LOTS.map(l=>`
-    <div class="lot-card ${l.open?'active-lot':''}">
-      <div class="lc-hd">
-        <span class="lc-name">${l.name}</span>
-        <span class="lc-tag ${l.open?'open':'closed'}">${l.open?'MỞ':'ĐÓNG'}</span>
+    <div class="tx-row" style="background:var(--card2);border-radius:10px;margin-bottom:8px;">
+      <div>
+        <div style="font-weight:700;">${l.name}</div>
+        <div style="font-size:12px;color:var(--muted)">Tổng: ${l.kg} kg • Giá Vốn L1: ${(l.voc[1]/1000).toFixed(0)}k/kg</div>
       </div>
-      <div class="lc-stats">
-        <div class="lc-stat"><div class="lc-sv">${l.kg}k</div><div class="lc-sl">Tổng Vốn</div></div>
-        <div class="lc-stat"><div class="lc-sv">${l.sold}/${l.kg}</div><div class="lc-sl">Đã bán</div></div>
-        <div class="lc-stat"><div class="lc-sv">${(l.voc[1]/1000).toFixed(0)}k</div><div class="lc-sl">Vốn L1</div></div>
-        <div class="lc-stat"><div class="lc-sv">${(l.san[1]/1000).toFixed(0)}k</div><div class="lc-sl">Sàn L1</div></div>
+      <div style="text-align:right">
+        <div style="font-weight:700;color:var(--green)">${(((l.sold||0)/l.kg)*100).toFixed(0)}%</div>
+        <div style="font-size:11px;color:var(--muted)">Đã xuất</div>
       </div>
     </div>
   `).join('');
@@ -854,23 +790,12 @@ function renderLotList(){
 
 function showToast(msg,color='var(--gold)'){
   const t = document.getElementById('toast');
-  if(!t) return;
-  t.textContent = msg;
-  t.style.background = color;
-  t.classList.add('show');
-  setTimeout(()=>{ t.classList.remove('show'); },3000);
+  t.textContent = msg; t.style.background = color; t.style.opacity = '1';
+  setTimeout(()=>{ t.style.opacity = '0'; },3000);
 }
 
-// INITIALIZATION
+// BẮT ĐẦU CHẠY TẢI TRANG
 window.onload = function(){
-  // Thêm ngày hiện tại vào header
-  if(document.getElementById('hdr-date')) {
-    document.getElementById('hdr-date').textContent = new Date().toLocaleDateString('vi-VN');
-  }
-  if(document.getElementById('hdr-sub')) {
-    document.getElementById('hdr-sub').textContent = "Hệ thống Quản lý Vựa";
-  }
-  
   renderLotStrip();
   renderRecentTx();
   renderEmployeeList();
@@ -878,7 +803,6 @@ window.onload = function(){
   renderLotList();
   if(selLot) updateFormPrices();
 };
-</script>
 </script>
 </body>
 </html>
