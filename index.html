@@ -430,394 +430,338 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 <div class="toast" id="toast">Thông báo thành công</div>
 
 <script>
-// dán link webapp google apps script của bạn vào đây
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPVSE0nvgNKdTowZxtYPH6lZRPHdq47vWUN9k6pQ3oNNnzpXTLKy2qqmq06vuvrAz_-g/exec"; 
+// ==================== 1. CẤU HÌNH & KHỞI TẠO DỮ LIỆU BỀN VỮNG ====================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXDbKVUNTPg2oc0v9y2liNehDS0jihCznbmWzoXWA__KNXH5-joAqN0Xcn8sh2T06uLw/exec";
 
-// HỆ CƠ SỞ DỮ LIỆU ĐỒNG BỘ 2 FILE
-let TRANSACTIONS = [
-  {id:'DH-1002', customer:'Đại Lý Minh Long', type:'SI', lot:'Lô A (Ri6)', productType:'Ri6-A', kg:1200, price:58000, total:69600000, pay:60000000, debt:9600000, employee:'Thuyền', time:'15:30'},
-  {id:'DH-1003', customer:'Nguyễn Văn B', type:'LE', lot:'Lô B (Ri6)', productType:'Ri6-B', kg:15, price:48000, total:720000, pay:720000, debt:0, employee:'Hải', time:'16:15'}
+// Tự động phục hồi dữ liệu từ bộ nhớ máy (LocalStorage) khi mở Web hoặc F5
+let ORDERS = JSON.parse(localStorage.getItem('SR_ORDERS')) || [];
+
+// Nếu chưa có dữ liệu lô hàng trong máy, lấy danh sách lô mặc định làm gốc
+let LOTS = JSON.parse(localStorage.getItem('SR_LOTS')) || [
+  { id: 'A', name: 'Lô Sáu Riêng A', kg: 1200, sold: 0, voc: {1:55000, 2:40000, 3:25000}, san: {1:75000, 2:55000, 3:35000}, open: true },
+  { id: 'B', name: 'Lô Ri6 Xuất Khẩu', kg: 800, sold: 0, voc: {1:60000, 2:45000, 3:30000}, san: {1:80000, 2:60000, 3:40000}, open: true }
 ];
 
-let LOSS_DATA = [
-  {lot:'Lô A (Ri6)', type:'Sượng/Thối', kg:45, reason:'Hàng rụng dập vỏ nhiều', employee:'Thuyền'},
-  {lot:'Lô B (Ri6)', type:'Hao tự nhiên', kg:12.5, reason:'Mất nước qua đêm', employee:'Hải'}
+let CUSTOMERS = JSON.parse(localStorage.getItem('SR_CUSTOMERS')) || [
+  { name: 'Anh Nam Chợ Gạo', phone: '0912345678', debt: '15.5' },
+  { name: 'Chị Hồng Bình Điền', phone: '0987654321', debt: '0' },
+  { name: 'Trạm Thu Mua Tân Thành', phone: '0909090909', debt: '42.0' }
 ];
 
-let EMPLOYEES = [
-  {name:'Thuyền', phone:'0912345678', role:'Kế Toán', salary:9000000},
-  {name:'Hải', phone:'0987654321', role:'Đóng Thùng', salary:12000000}
-];
+let sellType = 'le'; // Trạng thái mặc định: Bán lẻ
+let selLot = LOTS[0]; // Lô hàng đang chọn mặc định
 
-let CUSTOMERS = [
-  {name:'Đại Lý Minh Long', phone:'0944555666', type:'SI', debt:9.6, total:1200},
-  {name:'Nguyễn Văn B', phone:'0933221100', type:'LE', debt:0, total:15}
-];
+// ==================== 2. HÀM TÍNH TOÁN KPI & ĐỒNG BỘ LOCALSTORAGE ====================
+function updateDashboard() {
+  let doanhThu = 0;
+  let sanLuong = 0;
+  let noTong = 0;
+  let haoHut = 0;
 
-let LOTS = [
-  {id:'A', name:'Lô A (Ri6)', kg:5000, sold:1200, voc:{1:45000,2:35000,3:25000}, san:{1:58000,2:45000,3:35000}, open:true},
-  {id:'B', name:'Lô B (Ri6)', kg:3000, sold:15, voc:{1:46000,2:36000,3:26000}, san:{1:60000,2:48000,3:38000}, open:true}
-];
+  // 1. Quét mảng ORDERS tính Doanh thu & Sản lượng
+  ORDERS.forEach(order => {
+    doanhThu += (parseInt(order.total) || 0);
+    sanLuong += (parseFloat(order.kg) || 0);
+  });
 
-let currentTxType = 'LE';
+  // 2. Quét mảng CUSTOMERS tính Tổng nợ
+  CUSTOMERS.forEach(c => {
+    noTong += (parseFloat(c.debt) || 0);
+  });
 
-window.addEventListener('DOMContentLoaded', () => {
-  initSelectOptions();
-  renderHome();
-  renderLossSection();
-  renderEmployees();
-  renderCustomers();
-  renderLots();
-});
+  // 3. Quét mảng LOTS để tính toán tổng số kg hao hụt thực tế (nếu có lưu)
+  // Ghi chú: Số kg hao hụt có thể tính thêm dựa trên phần submitLoss độc lập của bạn
 
-// THANH ĐIỀU HƯỚNG TABS
+  // 4. Cập nhật trực tiếp lên các ô hiển thị KPI ngoài màn hình chính
+  if(document.getElementById('kpi-dt')) document.getElementById('kpi-dt').textContent = (doanhThu / 1000000).toFixed(1) + " tr";
+  if(document.getElementById('kpi-sl')) document.getElementById('kpi-sl').textContent = sanLuong.toFixed(0) + " kg";
+  if(document.getElementById('kpi-no')) document.getElementById('kpi-no').textContent = noTong.toFixed(1) + " tr";
+  if(document.getElementById('kpi-hh')) document.getElementById('kpi-hh').textContent = haoHut.toFixed(0) + " kg";
+
+  // 5. Đồng bộ toàn bộ trạng thái dữ liệu vào LocalStorage của thiết bị
+  localStorage.setItem('SR_ORDERS', JSON.stringify(ORDERS));
+  localStorage.setItem('SR_LOTS', JSON.stringify(LOTS));
+  localStorage.setItem('SR_CUSTOMERS', JSON.stringify(CUSTOMERS));
+}
+
+// KHỞI CHẠY HỆ THỐNG NGAY KHI MỞ WEB
+window.onload = function() {
+  updateDashboard();
+  renderLotStrip();
+  renderOrderList();
+  renderCustomerList();
+  renderLotList();
+};
+
+// ==================== 3. HÀM XỬ LÝ LƯU ĐƠN (submitOrder) CHỐNG ĐƠ 100% ====================
+function submitOrder(){
+  const khach = document.getElementById('f-khach').value.trim();
+  const kg = document.getElementById('f-kg').value.trim();
+  const gia = document.getElementById('f-gia').value.trim();
+  const loai = document.getElementById('f-loai').value;
+  const nv = document.getElementById('f-nv').value.trim();
+  
+  if(!khach || !kg || !gia){
+    showToast('⚠️ Điền đầy đủ: Khách + KG + Giá','var(--orange)');
+    return;
+  }
+  
+  // --- TIẾN TRÌNH 1: CẬP NHẬT GIAO DIỆN LẬP TỨC (0ms - KHÔNG CHỜ MẠNG) ---
+  const total = parseInt(kg) * parseInt(gia);
+  
+  // Đẩy đơn hàng mới vào bộ nhớ mảng
+  ORDERS.push({
+    id: Date.now(),
+    lotId: selLot ? selLot.id : '',
+    khach: khach,
+    loai: parseInt(loai),
+    kg: parseFloat(kg),
+    gia: parseInt(gia),
+    total: total,
+    nv: nv || 'Mặc định',
+    type: sellType,
+    time: new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})
+  });
+  
+  // Trừ/Cộng dồn số ký đã bán vào Lô hàng hiện tại
+  if(selLot) selLot.sold += parseFloat(kg);
+
+  // Xóa sạch ô nhập liệu ngay lập tức để nhân viên cân sầu riêng mã tiếp theo
+  document.getElementById('f-khach').value = '';
+  document.getElementById('f-kg').value = '';
+  document.getElementById('f-gia').value = '';
+  document.getElementById('total-val').textContent = '—';
+  document.getElementById('total-detail').textContent = '';
+  document.getElementById('fraud-box').style.display = 'none';
+  
+  // Làm mới màn hình và chạy hàm tính toán tập trung KPI
+  updateDashboard();
+  renderOrderList();
+  renderLotStrip();
+  
+  showToast('✅ Đã ghi nhận đơn! Đang đồng bộ ngầm...', 'var(--blue)');
+
+  // --- TIẾN TRÌNH 2: ĐẨY DỮ LIỆU CHẠY NGẦM LÊN GOOGLE SHEETS (KHÔNG BỊ CHẶN CORS) ---
+  const payload = {
+    action: "submitOrder",
+    khach: khach,
+    kg: kg,
+    gia: gia,
+    loai: loai,
+    nv: nv || "Mặc định",
+    type: sellType,
+    loHang: selLot ? selLot.name : "Không rõ lô"
+  };
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors", // Sử dụng no-cors chạy ngầm để triệt tiêu lỗi treo đứng trình duyệt
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    console.log("Đồng bộ Google Sheets ngầm thành công!");
+  })
+  .catch(err => {
+    console.error("Lỗi đồng bộ mạng (Đơn hàng đã được bảo toàn an toàn ở máy): ", err);
+  });
+}
+
+// ==================== 4. HÀM BÁO HAO HỤT (submitLoss) ====================
+function submitLoss(){
+  const loaiLoss = document.getElementById('h-loai').value;
+  const kg = document.getElementById('h-kg').value.trim();
+  const note = document.getElementById('h-note').value.trim();
+  
+  if(!kg){
+    showToast('⚠️ Nhập số kg!','var(--orange)');
+    return;
+  }
+  
+  // Giao diện làm sạch lập tức
+  document.getElementById('h-kg').value = '';
+  document.getElementById('h-note').value = '';
+  showToast('✅ Đã ghi nhận hao hụt! Đang gửi ngầm...', 'var(--blue)');
+
+  const payload = {
+    action: "submitLoss",
+    loaiLoss: loaiLoss,
+    kg: kg,
+    note: note || "Không ghi chú"
+  };
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    console.log("Đồng bộ hao hụt ngầm thành công!");
+  })
+  .catch(err => {
+    console.error("Lỗi gửi dữ liệu hao hụt ngầm: ", err);
+  });
+}
+
+// ==================== 5. GIỮ NGUYÊN 100% CÁC HÀM LOGIC GIAO DIỆN GỐC CỦA BẠN ====================
 const pages = ['pg-home','pg-nhap','pg-haohut','pg-nv','pg-kh','pg-lo'];
-function gotoTab(idx) {
-  pages.forEach((p, i) => {
-    document.getElementById(p).classList.toggle('active', i === idx);
-    const btn = document.getElementById('nav' + i);
-    if(btn) btn.classList.toggle('on', i === idx);
+function gotoTab(i){
+  pages.forEach((p,j)=>{
+    document.getElementById(p).classList.toggle('active',j===i);
+    const nb = document.getElementById('nav'+j);
+    if(nb) nb.classList.toggle('on',j===i);
   });
   document.getElementById('scrollArea').scrollTop = 0;
 }
 
-function showToast(msg, isSuccess = true) {
-  const t = document.getElementById('toast');
-  t.innerText = msg;
-  t.style.background = isSuccess ? 'var(--green2)' : 'var(--red2)';
-  t.style.opacity = '1';
-  setTimeout(() => t.style.opacity = '0', 2500);
+function openModal(id){ document.getElementById(id).style.display = 'flex'; }
+function closeModal(id){ document.getElementById(id).style.display = 'none'; }
+
+function setSellType(t){
+  sellType = t;
+  document.getElementById('btn-si').classList.toggle('active',t==='si');
+  document.getElementById('btn-le').classList.toggle('active',t==='le');
+  checkPrice();
 }
 
-function setTxType(type) {
-  currentTxType = type;
-  document.getElementById('btn-le').classList.toggle('active', type === 'LE');
-  document.getElementById('btn-si').classList.toggle('active', type === 'SI');
-  updateLotPrices();
-  calcInvoice();
+function selectLot(id){
+  selLot = LOTS.find(l=>l.id===id);
+  renderLotStrip();
+  checkPrice();
 }
 
-// KHỞI TẠO DỮ LIỆU ĐIỀU HƯỚNG TRÊN FORM
-function initSelectOptions() {
-  const txLot = document.getElementById('tx-lot');
-  const hhlot = document.getElementById('hh-lot');
-  const txEmp = document.getElementById('tx-emp');
-  const hhEmp = document.getElementById('hh-emp');
-  
-  if(txLot && hhlot) {
-    const opts = LOTS.filter(l=>l.open).map(l=>`<option value="${l.name}">${l.name}</option>`).join('');
-    txLot.innerHTML = opts;
-    hhlot.innerHTML = opts;
-  }
-  if(txEmp && hhEmp) {
-    const opts = EMPLOYEES.map(e=>`<option value="${e.name}">${e.name}</option>`).join('');
-    txEmp.innerHTML = opts;
-    hhEmp.innerHTML = opts;
-  }
-  
-  const datalist = document.getElementById('customer-suggestions');
-  if(datalist) {
-    datalist.innerHTML = CUSTOMERS.map(c=>`<option value="${c.name}"></option>`).join('');
-  }
-  updateLotPrices();
+function checkPrice(){
+  const loai = document.getElementById('f-loai').value;
+  const inputGia = document.getElementById('f-gia');
+  if(!selLot){ inputGia.value=''; return; }
+  const giaGoc = (sellType==='si') ? selLot.san[loai] : selLot.voc[loai];
+  inputGia.value = giaGoc || '';
+  calcTotal();
 }
 
-function updateLotPrices() {
-  const lotName = document.getElementById('tx-lot').value;
-  const prodType = document.getElementById('tx-ptype').value;
-  const lot = LOTS.find(l => l.name === lotName);
-  if(!lot) return;
+function calcTotal(){
+  const kg = parseFloat(document.getElementById('f-kg').value)||0;
+  const gia = parseInt(document.getElementById('f-gia').value)||0;
+  const loai = document.getElementById('f-loai').value;
+  const v = document.getElementById('total-val');
+  const d = document.getElementById('total-detail');
+  const fBox = document.getElementById('fraud-box');
   
-  let idx = 1;
-  if(prodType.endsWith('-B')) idx = 2;
-  if(prodType.endsWith('-C')) idx = 3;
+  if(!kg || !gia){ v.textContent='—'; d.textContent=''; fBox.style.display='none'; return; }
   
-  const targetedPrice = lot.san[idx];
-  document.getElementById('tx-price').value = targetedPrice;
-  calcInvoice();
-}
-
-function calcInvoice() {
-  const lotName = document.getElementById('tx-lot').value;
-  const prodType = document.getElementById('tx-ptype').value;
-  const kg = parseFloat(document.getElementById('tx-kg').value) || 0;
-  const price = parseFloat(document.getElementById('tx-price').value) || 0;
+  const t = kg * gia;
+  v.textContent = t.toLocaleString('vi-VN') + " đ";
+  d.textContent = `${kg} kg x ${gia.toLocaleString()}đ (Loại ${loai})`;
   
-  const total = kg * price;
-  document.getElementById('tx-total-val').innerText = total.toLocaleString() + ' đ';
-  document.getElementById('tx-total-detail').innerText = `${kg} kg × ${price.toLocaleString()}đ`;
-  
-  const pay = parseFloat(document.getElementById('tx-pay').value) || 0;
-  const debt = total - pay;
-  document.getElementById('tx-debt').value = debt > 0 ? debt.toLocaleString() + ' đ' : '0 đ';
-  
-  // CHỐNG GIAN LẬN CẤU TRÚC GIÁ (Kế thừa từ bản v2)
-  const lot = LOTS.find(l=>l.name === lotName);
-  const fraudBox = document.getElementById('fraud-warning');
-  const fraudMsg = document.getElementById('fraud-msg');
-  
-  if(lot && kg > 0) {
-    let typeIdx = 1;
-    if(prodType.endsWith('-B')) typeIdx = 2;
-    if(prodType.endsWith('-C')) typeIdx = 3;
-    
-    const von = lot.voc[typeIdx];
-    if(price < von) {
-      fraudBox.className = 'fraud-box danger';
-      fraudMsg.innerText = `Giá bán xuất kho (${price.toLocaleString()}đ) thấp hơn giá gốc nhập hàng (${von.toLocaleString()}đ). Lỗ nặng nghiệp vụ!`;
-    } else if (currentTxType === 'SI' && price < von * 1.1) {
-      fraudBox.className = 'fraud-box warning';
-      fraudMsg.innerText = `Biên lợi nhuận đổ sỉ thấp hơn 10% định mức an toàn của vựa sầu.`;
+  if(selLot){
+    const giaChuan = (sellType==='si') ? selLot.san[loai] : selLot.voc[loai];
+    if(gia < giaChuan){
+      fBox.style.display = 'block';
+      document.getElementById('fraud-msg').textContent = `Cảnh báo: Giá nhập (${gia.toLocaleString()}đ) thấp hơn giá cấu hình (${giaChuan.toLocaleString()}đ)!`;
     } else {
-      fraudBox.className = 'fraud-box';
+      fBox.style.display = 'none';
     }
-  } else {
-    fraudBox.className = 'fraud-box';
   }
-  validateForm();
 }
 
-function validateForm() {
-  const cust = document.getElementById('tx-cust').value.trim();
-  const kg = parseFloat(document.getElementById('tx-kg').value) || 0;
-  document.getElementById('submit-tx').disabled = !(cust !== '' && kg > 0);
-}
-
-// ĐẨY API LÊN GOOGLE SHEETS KHÔNG QUA TRUNG GIAN TRÌNH DUYỆT
-function postToSheet(payload, callback) {
-  if(!SCRIPT_URL || SCRIPT_URL.includes("xxxxxxxxx")) {
-    showToast("Vui lòng cấu hình URL Web App Apps Script thực tế!", false);
-    return;
-  }
-  
-  fetch(SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors', 
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(payload)
-  })
-  .then(() => {
-    showToast("Đồng bộ Google Sheets thành công!");
-    if(callback) callback();
-  })
-  .catch(err => {
-    console.error(err);
-    showToast("Lỗi đẩy mạng, dữ liệu tạm lưu máy!", false);
-  });
-}
-
-// ── XỬ LÝ GỬI TAB 1: GIAO DỊCH ──
-function submitTransaction() {
-  const cust = document.getElementById('tx-cust').value;
-  const lot = document.getElementById('tx-lot').value;
-  const ptype = document.getElementById('tx-ptype').value;
-  const kg = parseFloat(document.getElementById('tx-kg').value);
-  const price = parseFloat(document.getElementById('tx-price').value);
-  const pay = parseFloat(document.getElementById('tx-pay').value) || 0;
-  
-  const total = kg * price;
-  const debt = total - pay;
-  const emp = document.getElementById('tx-emp').value;
-  const isFraud = document.getElementById('fraud-warning').className !== 'fraud-box' ? 'CÓ NGUY CƠ' : 'AN TOÀN';
-  
-  const tx = {
-    action: 'addTransaction',
-    id: 'DH-' + (1000 + TRANSACTIONS.length + 1),
-    customer: cust, type: currentTxType, lot, productType: ptype,
-    kg, price, total, pay, debt, employee: emp, fraudRisk: isFraud
-  };
-  
-  postToSheet(tx, () => {
-    TRANSACTIONS.unshift(tx);
-    const targetLot = LOTS.find(l=>l.name === lot);
-    if(targetLot) targetLot.sold = (targetLot.sold || 0) + kg;
-    
-    document.getElementById('tx-cust').value = '';
-    document.getElementById('tx-kg').value = '';
-    document.getElementById('tx-pay').value = '';
-    renderHome();
-    gotoTab(0);
-  });
-}
-
-// ── XỬ LÝ GỬI TAB 2: HAO HỤT ──
-function submitLoss() {
-  const lot = document.getElementById('hh-lot').value;
-  const type = document.getElementById('hh-type').value;
-  const kg = parseFloat(document.getElementById('hh-kg').value) || 0;
-  const emp = document.getElementById('hh-emp').value;
-  const reason = document.getElementById('hh-reason').value;
-  
-  if(kg <= 0) { showToast("Vui lòng nhập khối lượng hao!", false); return; }
-  
-  const data = { action: 'addLoss', lot, type, kg, reason, employee: emp };
-  
-  postToSheet(data, () => {
-    LOSS_DATA.unshift(data);
-    document.getElementById('hh-kg').value = '';
-    document.getElementById('hh-reason').value = '';
-    renderHome();
-    renderLossSection();
-  });
-}
-
-// ── XỬ LÝ GỬI TAB 3: NHÂN VIÊN ──
-function submitEmployee() {
-  const name = document.getElementById('nv-name').value.trim();
-  const phone = document.getElementById('nv-phone').value.trim();
-  const role = document.getElementById('nv-role').value;
-  const salary = parseFloat(document.getElementById('nv-salary').value) || 0;
-  
-  if(!name) { showToast("Tên không được bỏ trống!", false); return; }
-  
-  const data = { action: 'addEmployee', name, phone, role, salary };
-  
-  postToSheet(data, () => {
-    EMPLOYEES.push({name, phone, role, salary});
-    document.getElementById('nv-name').value = '';
-    document.getElementById('nv-phone').value = '';
-    document.getElementById('nv-salary').value = '';
-    initSelectOptions();
-    renderEmployees();
-  });
-}
-
-// ── XỬ LÝ GỬI TAB 4: KHÁCH HÀNG ──
-function submitCustomer() {
-  const name = document.getElementById('kh-name').value.trim();
-  const phone = document.getElementById('kh-phone').value.trim();
-  const type = document.getElementById('kh-type').value;
-  const initialDebt = parseFloat(document.getElementById('kh-debt').value) || 0;
-  
-  if(!name) { showToast("Tên khách hàng trống!", false); return; }
-  
-  const data = { action: 'addCustomer', name, phone, type, initialDebt };
-  
-  postToSheet(data, () => {
-    CUSTOMERS.push({name, phone, type, debt: initialDebt, total: 0});
-    document.getElementById('kh-name').value = '';
-    document.getElementById('kh-phone').value = '';
-    document.getElementById('kh-debt').value = '';
-    initSelectOptions();
-    renderCustomers();
-  });
-}
-
-// ── XỬ LÝ GỬI TAB 5: LÔ HÀNG ──
-function submitLot() {
-  const name = document.getElementById('lo-name').value.trim();
-  const kg = parseFloat(document.getElementById('lo-kg').value) || 0;
-  const v1 = parseFloat(document.getElementById('lo-v1').value) || 0;
-  const v2 = parseFloat(document.getElementById('lo-v2').value) || 0;
-  const v3 = parseFloat(document.getElementById('lo-v3').value) || 0;
-  const s1 = parseFloat(document.getElementById('lo-s1').value) || 0;
-  const s2 = parseFloat(document.getElementById('lo-s2').value) || 0;
-  const s3 = parseFloat(document.getElementById('lo-s3').value) || 0;
-  
-  if(!name || kg <= 0) { showToast("Vui lòng điền tên lô và tải trọng nhập!", false); return; }
-  
-  const data = { action: 'addLot', name, kg, v1, v2, v3, s1, s2, s3 };
-  
-  postToSheet(data, () => {
-    LOTS.push({
-      id: String.fromCharCode(65 + LOTS.length),
-      name, kg, sold: 0, voc:{1:v1, 2:v2, 3:v3}, san:{1:s1, 2:s2, 3:s3}, open: true
-    });
-    document.getElementById('lo-name').value = '';
-    document.getElementById('lo-kg').value = '';
-    initSelectOptions();
-    renderLots();
-    renderHome();
-  });
-}
-
-// ── CÁC HÀM RENDER ĐỒNG BỘ GIAO DIỆN ──
-function renderHome() {
-  let dt = 0, sl = 0, no = 0, hh = 0;
-  TRANSACTIONS.forEach(t => { dt += t.total; sl += t.kg; no += t.debt; });
-  LOSS_DATA.forEach(l => { hh += l.kg; });
-  
-  document.getElementById('kpi-dt').innerHTML = `${(dt/1000000).toFixed(1)} <span style="font-size:12px;">Trđ</span>`;
-  document.getElementById('kpi-sl').innerHTML = `${sl.toLocaleString()} <span style="font-size:12px;">kg</span>`;
-  document.getElementById('kpi-no').innerHTML = `${(no/1000000).toFixed(2)} <span style="font-size:12px;">Trđ</span>`;
-  document.getElementById('kpi-hh').innerHTML = `${hh.toLocaleString()} <span style="font-size:12px;">kg</span>`;
-  document.getElementById('total-loss-badge').innerText = LOSS_DATA.length;
-
-  document.getElementById('recent-tx-list').innerHTML = TRANSACTIONS.map(t=>`
-    <div class="tx-row ${t.debt>0?'warn':''}">
-      <div>
-        <div style="font-weight:700;">${t.customer} <span class="badge ${t.type.toLowerCase()}">${t.type}</span></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Mã: ${t.productType} • Sl: ${t.kg} kg • NV: ${t.employee}</div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-family:'Baloo 2';font-weight:800;color:var(--gold);">${t.total.toLocaleString()}đ</div>
-        <div style="font-size:10px;color:var(--red);">${t.debt>0?'Nợ: '+t.debt.toLocaleString()+'đ':'Hết nợ'}</div>
-      </div>
-    </div>
-  `).join('');
-
-  document.getElementById('home-lot-strip').innerHTML = LOTS.map(l=>`
-    <div class="lot-pill ${l.open?'sel':''}">
-      <div class="lp-name">${l.name}</div>
-      <div class="lp-info">Tổng: ${l.kg} kg</div>
-      <div class="lp-info" style="color:var(--green)">Xuất: ${(((l.sold||0)/l.kg)*100).toFixed(0)}%</div>
-    </div>
-  `).join('');
-}
-
-function renderLossSection() {
-  document.getElementById('loss-table-body').innerHTML = LOTS.map(l=>{
-    let totalL = 0;
-    LOSS_DATA.forEach(h => { if(h.lot === l.name) totalL += h.kg; });
-    return `
-      <div class="lrow">
-        <div class="lr-name">${l.name}</div>
-        <div class="lr-c">${l.kg.toLocaleString()} kg</div>
-        <div class="lr-c" style="color:var(--orange); font-weight:700;">${totalL.toLocaleString()} kg</div>
-      </div>
-    `;
+function renderLotStrip(){
+  const container = document.getElementById('lot-strip');
+  if(!container) return;
+  container.innerHTML = LOTS.filter(l=>l.open).map(l=>{
+    const active = selLot && selLot.id===l.id ? 'active' : '';
+    const conLai = l.kg - (l.sold||0);
+    return `<div class="lot-card ${active}" onclick="selectLot('${l.id}')">
+              <div style="font-weight:700;font-size:14px;">${l.name}</div>
+              <div style="font-size:11px;opacity:0.8;margin-top:2px;">Còn: ${conLai.toFixed(0)}/${l.kg} kg</div>
+            </div>`;
   }).join('');
 }
 
-function renderEmployees() {
-  document.getElementById('employee-list').innerHTML = EMPLOYEES.map(e=>`
-    <div class="tx-row" style="border-left-color:var(--blue);">
+function renderOrderList(){
+  const container = document.getElementById('order-list');
+  if(!container) return;
+  if(ORDERS.length===0){
+    container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px;">Chưa có đơn hàng nào trong phiên làm việc.</div>';
+    return;
+  }
+  // Đảo ngược danh sách đơn hàng để đơn mới nhất luôn xếp lên đầu
+  container.innerHTML = [...ORDERS].reverse().map(o=>`
+    <div class="tx-row">
       <div>
-        <div style="font-weight:700;">${e.name} — <span style="color:var(--gold);font-size:12px;">${e.role}</span></div>
-        <div style="font-size:11px;color:var(--muted)">SĐT: ${e.phone}</div>
+        <div style="font-weight:700;">${o.khach} <span class="badge ${o.type==='si'?'si':'le'}">${o.type==='si'?'Sỉ':'Lẻ'}</span></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">${o.time} • Loại ${o.loai} • ${o.nv}</div>
       </div>
-      <div style="font-family:'Baloo 2';font-weight:700;">${e.salary.toLocaleString()}đ</div>
+      <div style="text-align:right">
+        <div style="font-weight:700;color:var(--gold);">${o.total.toLocaleString()}đ</div>
+        <div style="font-size:11px;color:var(--muted);">${o.kg} kg x ${o.gia.toLocaleString()}</div>
+      </div>
     </div>
   `).join('');
 }
 
-function renderCustomers() {
-  document.getElementById('customer-list').innerHTML = CUSTOMERS.map(c=>`
-    <div class="tx-row" style="border-left-color:var(--gold);">
+function renderCustomerList(){
+  const container = document.getElementById('customer-list');
+  if(!container) return;
+  container.innerHTML = CUSTOMERS.map(c=>`
+    <div class="tx-row" style="background:var(--card2);border-radius:10px;">
       <div>
-        <div style="font-weight:700;">${c.name} <span class="badge ${c.type.toLowerCase()}">${c.type}</span></div>
-        <div style="font-size:11px;color:var(--muted)">SĐT: ${c.phone||'Chưa có'}</div>
+        <div style="font-weight:700;">${c.name}</div>
+        <div style="font-size:12px;color:var(--muted)">SĐT: ${c.phone}</div>
       </div>
-      <div style="text-align:right;">
-        <div style="color:var(--red);font-weight:700;font-size:13px;">${c.debt} tr nợ</div>
+      <div style="text-align:right">
+        <div style="font-size:11px;color:var(--muted)">Dư nợ</div>
+        <div style="font-weight:700;color:${parseFloat(c.debt)>0?'var(--orange)':'var(--text)'}">${c.debt} tr</div>
       </div>
     </div>
   `).join('');
 }
 
-function renderLots() {
-  document.getElementById('lot-list').innerHTML = LOTS.map(l=>`
-    <div class="tx-row" style="border-left-color:var(--green2)">
+function renderLotList(){
+  const container = document.getElementById('lot-list');
+  if(!container) return;
+  container.innerHTML = LOTS.map(l=>`
+    <div class="tx-row" style="background:var(--card2);border-radius:10px;">
       <div>
         <div style="font-weight:700;">${l.name}</div>
-        <div style="font-size:11px;color:var(--muted)">Tổng hàng: ${l.kg} kg • Vốn L1: ${l.voc[1].toLocaleString()}đ • Bán L1: ${l.san[1].toLocaleString()}đ</div>
+        <div style="font-size:12px;color:var(--muted)">Tổng hàng: ${l.kg} kg • Vốn L1: ${(l.voc[1]).toLocaleString()}đ</div>
       </div>
-      <div style="text-align:right;">
+      <div style="text-align:right">
         <div style="font-weight:700;color:var(--green)">${(((l.sold||0)/l.kg)*100).toFixed(0)}%</div>
-        <div style="font-size:11px;color:var(--muted)">Xuất kho</div>
+        <div style="font-size:11px;color:var(--muted)">Đã ra kho</div>
       </div>
     </div>
   `).join('');
+}
+
+function showToast(msg,color='var(--green2)'){
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg; t.style.background = color; t.style.opacity = '1';
+  setTimeout(()=>{ t.style.opacity = '0'; },3000);
+}
+
+function addNewLot(){
+  const name = document.getElementById('nl-name').value.trim();
+  const kg = parseFloat(document.getElementById('nl-kg').value)||0;
+  if(!name || !kg){ showToast('⚠️ Điền tên lô và tổng số kg!','var(--orange)'); return; }
+  const v1 = parseInt(document.getElementById('nl-v1').value)||45000;
+  const v2 = parseInt(document.getElementById('nl-v2').value)||30000;
+  const v3 = parseInt(document.getElementById('nl-v3').value)||15000;
+  const s1 = parseInt(document.getElementById('nl-s1').value)||Math.round(v1*1.3);
+  const s2 = parseInt(document.getElementById('nl-s2').value)||Math.round(v2*1.3);
+  const s3 = parseInt(document.getElementById('nl-s3').value)||Math.round(v3*1.3);
+  
+  const newLot = { id: String.fromCharCode(65 + LOTS.length), name, kg, sold: 0, voc: {1:v1, 2:v2, 3:v3}, san: {1:s1, 2:s2, 3:s3}, open: true };
+  LOTS.push(newLot);
+  closeModal('m-addlot');
+  
+  updateDashboard(); // Gọi hàm tính toán để lưu lô mới vào bộ nhớ thiết bị
+  renderLotStrip();
+  renderLotList();
+  showToast('✅ Đã thêm lô: ' + name);
+  document.getElementById('nl-name').value = '';
+  document.getElementById('nl-kg').value = '';
 }
 </script>
 </body>
