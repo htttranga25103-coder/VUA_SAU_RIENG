@@ -553,10 +553,10 @@ function renderKPI(){
   const haoC   = parseFloat(haoPct)>5?'orange':'green';
 
   document.getElementById('kpiGrid').innerHTML = `
-    <div class="kcard c-gold"><div class="k-lbl">💰 Doanh Thu HN</div><div class="k-val gold">${fm(rev)}</div><div class="k-unit">đồng</div><div class="k-trend up">${todayTx.length} giao dịch</div></div>
-    <div class="kcard c-green"><div class="k-lbl">⚖️ KG Bán HN</div><div class="k-val green">${kg.toLocaleString('vi')}</div><div class="k-unit">kg</div><div class="k-trend up">${LOTS.length} lô theo dõi</div></div>
+    <div class="kcard c-gold"><div class="k-lbl">💰 Doanh Thu </div><div class="k-val gold">${fm(rev)}</div><div class="k-unit">đồng</div><div class="k-trend up">${todayTx.length} giao dịch</div></div>
+    <div class="kcard c-green"><div class="k-lbl">⚖️ KG Bán </div><div class="k-val green">${kg.toLocaleString('vi')}</div><div class="k-unit">kg</div><div class="k-trend up">${LOTS.length} lô theo dõi</div></div>
     <div class="kcard c-${haoC}"><div class="k-lbl">🍂 Hao Hụt Lô</div><div class="k-val ${haoC}">${haoPct}%</div><div class="k-unit">${haoKg} kg</div><div class="k-trend ${parseFloat(haoPct)>5?'dn':'up'}">${parseFloat(haoPct)>5?'⚠️ Vượt ngưỡng':'✅ Trong mức'}</div></div>
-    <div class="kcard c-${flag>0?'red':'green'}"><div class="k-lbl">🚨 Nghi Vấn HN</div><div class="k-val ${flag>0?'red':'green'}">${flag}</div><div class="k-unit">giao dịch</div><div class="k-trend ${flag>0?'dn':'up'}">${flag>0?'Kiểm tra ngay!':'✅ Bình thường'}</div></div>`;
+    <div class="kcard c-${flag>0?'red':'green'}"><div class="k-lbl">🚨 Nghi Vấn </div><div class="k-val ${flag>0?'red':'green'}">${flag}</div><div class="k-unit">giao dịch</div><div class="k-trend ${flag>0?'dn':'up'}">${flag>0?'Kiểm tra ngay!':'✅ Bình thường'}</div></div>`;
 }
 
 // ═══════════════════════════════════════════════════════
