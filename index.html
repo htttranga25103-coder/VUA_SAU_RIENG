@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Vựa Sầu Cô Huyền</title>
+<title>Vựa Sầu — Quản Lý</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -210,7 +210,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   <div class="hdr-brand">
     <span class="hdr-icon">🌳</span>
     <div>
-      <div class="hdr-name">Vựa Cô Huyền<span class="sync-dot" id="syncDot" title="Trạng thái đồng bộ Sheets"></span></div>
+      <div class="hdr-name">Vựa Sầu Riêng<span class="sync-dot" id="syncDot" title="Trạng thái đồng bộ Sheets"></span></div>
       <div class="hdr-sub" id="hdr-sub"></div>
     </div>
   </div>
@@ -537,6 +537,22 @@ function nowStr(){
 // ═══════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════
+// ── Migration: xóa c.total sai đơn vị từ phiên bản cũ ──
+(function migrate(){
+  try {
+    const raw = localStorage.getItem('vsr_customers');
+    if(!raw) return;
+    const list = JSON.parse(raw);
+    // Nếu bất kỳ khách nào có total > 1 tỷ → đang lưu bằng đồng nhưng *1e6 → reset về 0, để renderCustList tính lại từ TRANSACTIONS
+    const hasBad = list.some(c => (c.total||0) > 1_000_000_000);
+    if(hasBad){
+      list.forEach(c => { c.total = 0; c.buys = 0; }); // sẽ được tính lại từ TRANSACTIONS
+      localStorage.setItem('vsr_customers', JSON.stringify(list));
+      console.log('Migration: reset customer totals — will recalc from TRANSACTIONS');
+    }
+  } catch(e){}
+})();
+
 window.onload = function(){
   const now = new Date();
   document.getElementById('hdr-date').textContent = now.toLocaleDateString('vi-VN',{weekday:'short',day:'2-digit',month:'2-digit'});
@@ -796,9 +812,14 @@ function submitOrder(){
   const li=LOTS.findIndex(l=>l.id===selLot.id);
   if(li>=0){ LOTS[li].sold=(LOTS[li].sold||0)+kg; selLot=LOTS[li]; saveLots(); }
 
-  // cập nhật tổng khách
-  const ci=CUSTOMERS.findIndex(c=>c.name===khach.replace(/\s*\(.*\)/,'').trim());
-  if(ci>=0){ CUSTOMERS[ci].buys=(CUSTOMERS[ci].buys||0)+1; CUSTOMERS[ci].total=Math.round(((CUSTOMERS[ci].total||0)+tx.total/1e6)*10)/10; saveCustomers(); }
+  // cập nhật tổng khách — so sánh không phân biệt hoa thường
+  const rawKhach = khach.replace(/\s*\(.*\)/,'').trim().toLowerCase();
+  const ci = CUSTOMERS.findIndex(c=> c.name.toLowerCase().trim() === rawKhach);
+  if(ci>=0){
+    CUSTOMERS[ci].buys  = (CUSTOMERS[ci].buys||0)+1;
+    CUSTOMERS[ci].total = (CUSTOMERS[ci].total||0) + tx.total; // đồng
+    saveCustomers();
+  }
 
   // push Sheets ngầm
   pushToSheet('GiaoDich',{
@@ -965,26 +986,84 @@ function renderFraudBanner(){
 //  KHÁCH HÀNG
 // ═══════════════════════════════════════════════════════
 function renderCustList(){
-  if(!CUSTOMERS.length){ document.getElementById('custList').innerHTML='<div class="empty-msg">👥 Chưa có khách hàng — bấm + Thêm</div>'; return; }
-  const sorted=[...CUSTOMERS].sort((a,b)=>(b.total||0)-(a.total||0));
-  document.getElementById('custList').innerHTML=sorted.map(c=>`
-    <div class="ccard">
+  // ── Tự động gom khách từ TRANSACTIONS vào CUSTOMERS nếu chưa có ──
+  TRANSACTIONS.forEach(t=>{
+    const rawName = (t.khach||'').replace(/\s*\(.*\)/,'').trim();
+    if(!rawName) return;
+    const exists = CUSTOMERS.find(c=>
+      c.name.toLowerCase().trim() === rawName.toLowerCase()
+    );
+    if(!exists){
+      CUSTOMERS.push({
+        name: rawName,
+        type: (t.kieu||'').toLowerCase().includes('sỉ') ? 'si' : 'le',
+        phone: '—', addr: '—', note: '—',
+        buys: 0, total: 0, debt: 0
+      });
+    }
+  });
+
+  // ── Tính lại buys + total từ TRANSACTIONS (luôn tính lại = đồng) ──
+  CUSTOMERS.forEach(c=>{
+    const txOfC = TRANSACTIONS.filter(t=>{
+      const n = (t.khach||'').replace(/\s*\(.*\)/,'').trim().toLowerCase();
+      return n === c.name.toLowerCase().trim();
+    });
+    c.buys  = txOfC.length;
+    c.total = txOfC.reduce((s,t)=>s+(t.total||0), 0); // đồng
+  });
+  saveCustomers();
+
+  // ── Sắp xếp theo tổng tiền giảm dần, hiển thị TẤT CẢ ──
+  const sorted = [...CUSTOMERS].sort((a,b)=>(b.total||0)-(a.total||0));
+
+  if(!sorted.length){
+    document.getElementById('custList').innerHTML='<div class="empty-msg">👥 Chưa có khách — bấm + Thêm hoặc nhập giao dịch</div>';
+    document.getElementById('topKhChart').innerHTML='';
+    return;
+  }
+
+  // ── Danh sách đầy đủ ──
+  document.getElementById('custList').innerHTML = sorted.map((c,i)=>`
+    <div class="ccard" style="border-left-color:${i===0?'var(--gold)':i===1?'#aaa':i===2?'#cd7f32':'var(--border)'}">
       <span class="cc-ico">${c.type==='si'?'🚛':'🧺'}</span>
       <div class="cc-body">
-        <div class="cc-name">${c.name} <span class="chip ${c.type}">${c.type==='si'?'Sỉ':'Lẻ'}</span></div>
+        <div class="cc-name">${c.name} <span class="chip ${c.type||'le'}">${c.type==='si'?'Sỉ':'Lẻ'}</span>${i<3?' <span style="font-size:13px">'+(i===0?'🥇':i===1?'🥈':'🥉')+'</span>':''}</div>
         <div class="cc-det">📞 ${c.phone||'—'} · ${c.buys||0} lần mua</div>
-        ${(c.debt||0)>0?`<div style="font-size:11px;color:var(--red);font-weight:700;margin-top:3px;">💳 Nợ: ${fm(c.debt*1e6)}</div>`:'<div style="font-size:11px;color:var(--green);margin-top:3px;">✅ OK</div>'}
+        ${(c.debt||0)>0
+          ? `<div style="font-size:11px;color:var(--red);font-weight:700;margin-top:3px;">💳 Còn nợ: ${fm(c.debt||0)}</div>`
+          : `<div style="font-size:11px;color:var(--green);margin-top:3px;">✅ Đã thanh toán</div>`}
       </div>
-      <div class="cc-right"><div class="cc-amt">${fm((c.total||0)*1e6)}</div><div style="font-size:10px;color:var(--muted)">tổng mua</div></div>
+      <div class="cc-right">
+        <div class="cc-amt">${c.total>0?fm(c.total):'—'}</div>
+        <div style="font-size:10px;color:var(--muted)">${c.buys>0?'tổng mua':'chưa mua'}</div>
+      </div>
     </div>`).join('');
 
-  // top chart
-  const top5=sorted.slice(0,5);
-  const maxT=Math.max(...top5.map(c=>c.total||0),1);
-  document.getElementById('topKhChart').innerHTML=top5.map((c,i)=>
-    `<div class="brow"><span class="blbl" style="font-size:10px;width:64px">${c.name.split(' ')[0]}</span>
-    <div class="btrack"><div class="bfill" style="width:${Math.max(Math.round((c.total||0)/maxT*100),3)}%;background:${i===0?'linear-gradient(90deg,#f5c842,#c77d00)':i===1?'linear-gradient(90deg,#7a9b80,#4a6b50)':'var(--card2)'}">
-      <span>${i===0?'🥇':i===1?'🥈':i===2?'🥉':''} ${fm((c.total||0)*1e6)}</span></div></div></div>`).join('');
+  // ── Top chart — lấy 5 khách mua nhiều nhất, tên đầy đủ ──
+  const top5  = sorted.slice(0,5);
+  const maxT  = Math.max(...top5.map(c=>c.total||0), 1);
+  const colors= ['linear-gradient(90deg,#f5c842,#c77d00)',
+                  'linear-gradient(90deg,#aaa,#777)',
+                  'linear-gradient(90deg,#cd7f32,#8B4513)',
+                  'var(--green2)','var(--card2)'];
+  document.getElementById('topKhChart').innerHTML = top5.map((c,i)=>{
+    const pct = Math.max(Math.round((c.total||0)/maxT*100), c.total>0?5:0);
+    // Tên hiển thị: lấy 2 từ cuối (họ + tên) để rõ hơn
+    // Tên hiển thị: ưu tiên 2 từ cuối (bỏ họ), tối đa 10 ký tự
+    const nameParts = c.name.trim().split(' ').filter(Boolean);
+    const dispName  = nameParts.length >= 2
+      ? nameParts.slice(-2).join(' ')   // "Chú Tám", "Cô Út"
+      : c.name;
+    return `<div class="brow">
+      <span class="blbl" style="font-size:10px;width:90px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);" title="${c.name}">${dispName}</span>
+      <div class="btrack">
+        <div class="bfill" style="width:${pct}%;background:${colors[i]||colors[4]}">
+          <span>${i===0?'🥇':i===1?'🥈':i===2?'🥉':'  '} ${c.total>0?fmShort(c.total):'—'}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ═══════════════════════════════════════════════════════
