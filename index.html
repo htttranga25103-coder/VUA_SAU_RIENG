@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VỰA SẦU CÔ HUYỀN</title>
+<title>Vựa Sầu — Quản Lý</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -195,6 +195,8 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
 .ptag.ref{color:var(--gold);border-color:rgba(245,200,66,.4);}
 .warn-rule{font-size:11px;color:var(--muted);margin-top:6px;}
 .empty-msg{padding:20px;text-align:center;color:var(--muted);font-size:13px;}
+.kcard.c-blue::after{background:var(--blue);}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 /* sync badge */
 .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-left:6px;}
 .sync-dot.syncing{background:var(--orange);animation:blink .8s infinite;}
@@ -208,7 +210,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--te
   <div class="hdr-brand">
     <span class="hdr-icon">🌳</span>
     <div>
-      <div class="hdr-name">Vựa Sầu Riêng Cô Huyền<span class="sync-dot" id="syncDot" title="Trạng thái đồng bộ Sheets"></span></div>
+      <div class="hdr-name">Vựa Sầu Riêng<span class="sync-dot" id="syncDot" title="Trạng thái đồng bộ Sheets"></span></div>
       <div class="hdr-sub" id="hdr-sub"></div>
     </div>
   </div>
@@ -450,15 +452,40 @@ const LS = {
   set: (k,v) => { try{ localStorage.setItem('vsr_'+k, JSON.stringify(v)); }catch(e){} },
 };
 
-// Gửi lên Sheets hoàn toàn ngầm — KHÔNG await, KHÔNG block UI
+// ── PUSH TO SHEETS — queue nếu offline, retry tự động ──────
+const _queue = JSON.parse(localStorage.getItem('vsr_queue')||'[]');
+
 function pushToSheet(sheet, data){
+  const item = {sheet, data, ts: Date.now()};
+  _queue.push(item);
+  localStorage.setItem('vsr_queue', JSON.stringify(_queue));
   setSyncState('syncing');
-  fetch(SCRIPT_URL, {
-    method:'POST', mode:'no-cors',
-    body: JSON.stringify({sheet, data}),
-    headers:{'Content-Type':'text/plain'}
-  }).then(()=>setSyncState('ok')).catch(()=>setSyncState('error'));
+  _flushQueue();
 }
+
+function _flushQueue(){
+  if(!_queue.length){ setSyncState('ok'); return; }
+  const item = _queue[0];
+  // Dùng XMLHttpRequest thay fetch — tương thích hơn với Apps Script no-cors
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', SCRIPT_URL, true);
+  xhr.setRequestHeader('Content-Type', 'text/plain');
+  xhr.onload = function(){
+    _queue.shift();
+    localStorage.setItem('vsr_queue', JSON.stringify(_queue));
+    if(_queue.length > 0) _flushQueue();
+    else setSyncState('ok');
+  };
+  xhr.onerror = function(){
+    // Giữ trong queue, thử lại sau 10 giây
+    setSyncState('error');
+    setTimeout(_flushQueue, 10000);
+  };
+  xhr.send(JSON.stringify({sheet: item.sheet, data: item.data}));
+}
+
+// Flush queue khi mở trang (gửi lại những gì bị lỗi lần trước)
+window.addEventListener('load', ()=>{ if(_queue.length) { setSyncState('syncing'); _flushQueue(); } });
 
 function setSyncState(s){
   const dot = document.getElementById('syncDot');
@@ -487,10 +514,19 @@ function saveTransactions(){ LS.set('transactions', TRANSACTIONS); }
 //  HELPERS
 // ═══════════════════════════════════════════════════════
 function fm(n){
-  if(n>=1e9) return (n/1e9).toFixed(1)+'T';
-  if(n>=1e6) return (n/1e6).toFixed(1)+'M';
-  if(n>=1e3) return (n/1e3).toFixed(0)+'K';
-  return (n||0).toLocaleString('vi');
+  n = Math.round(n||0);
+  if(n >= 1000000000) return (n/1000000000).toFixed(1).replace('.0','') + ' tỷ';
+  if(n >= 1000000)    return (n/1000000).toFixed(1).replace('.0','') + ' triệu';
+  if(n >= 1000)       return (n/1000).toFixed(0) + ' nghìn';
+  return n.toLocaleString('vi') + ' đ';
+}
+// Dạng ngắn gọn hơn cho bar chart (không có đơn vị dài)
+function fmShort(n){
+  n = Math.round(n||0);
+  if(n >= 1000000000) return (n/1000000000).toFixed(1).replace('.0','') + ' tỷ';
+  if(n >= 1000000)    return (n/1000000).toFixed(1).replace('.0','') + ' tr';
+  if(n >= 1000)       return (n/1000).toFixed(0) + ' ng';
+  return n.toLocaleString('vi');
 }
 function today(){ return new Date().toLocaleDateString('vi-VN'); }
 function nowStr(){
@@ -540,23 +576,54 @@ function renderKPI(){
   const tod = today();
   const todayTx = TRANSACTIONS.filter(t=>t.date===tod);
   const rev  = todayTx.reduce((s,t)=>s+t.total,0);
-  const kg   = todayTx.reduce((s,t)=>s+t.kg,0);
+  const kgBan = todayTx.reduce((s,t)=>s+t.kg,0);
   const flag = todayTx.filter(t=>t.flag).length;
-  const allFlag = TRANSACTIONS.filter(t=>t.flag).length;
   document.getElementById('alertCount').textContent = flag;
 
-  // hao hụt từ lô
-  let nhap=0, ban=0;
-  LOTS.forEach(l=>{ nhap+=l.kg; ban+=(l.sold||0); });
-  const haoPct = nhap>0?((nhap-ban)/nhap*100).toFixed(1):'0.0';
-  const haoKg  = nhap-ban;
-  const haoC   = parseFloat(haoPct)>5?'orange':'green';
+  // Tồn kho — tính riêng từng lô
+  let tongNhap=0, tongBan=0, tongVon=0;
+  LOTS.forEach(l=>{
+    tongNhap += l.kg;
+    tongBan  += (l.sold||0);
+    tongVon  += l.kg * (l.voc[1]||0);
+  });
+  const tonKho   = tongNhap - tongBan;           // kg còn lại trong kho
+  const tonKhoC  = tonKho <= 0 ? 'red' : tonKho < 100 ? 'orange' : 'green';
+
+  // Hao hụt — chỉ tính từ sheet HaoHut (đã ghi nhận thực tế)
+  const haoRows  = JSON.parse(localStorage.getItem('vsr_haohut')||'[]');
+  const tongHao  = haoRows.reduce((s,h)=>s+(parseFloat(h.kg)||0), 0);
+  const haoPct   = tongNhap>0 ? (tongHao/tongNhap*100).toFixed(1) : '0.0';
+  const haoC     = parseFloat(haoPct)>5 ? 'red' : parseFloat(haoPct)>3 ? 'orange' : 'green';
+
+  // Lợi nhuận ước tính hôm nay
+  const loiNhuan = todayTx.reduce((s,t)=> s + t.total - (t.kg*(t.san||0)*0.8), 0);
 
   document.getElementById('kpiGrid').innerHTML = `
-    <div class="kcard c-gold"><div class="k-lbl">💰 Doanh Thu </div><div class="k-val gold">${fm(rev)}</div><div class="k-unit">đồng</div><div class="k-trend up">${todayTx.length} giao dịch</div></div>
-    <div class="kcard c-green"><div class="k-lbl">⚖️ KG Bán </div><div class="k-val green">${kg.toLocaleString('vi')}</div><div class="k-unit">kg</div><div class="k-trend up">${LOTS.length} lô theo dõi</div></div>
-    <div class="kcard c-${haoC}"><div class="k-lbl">🍂 Hao Hụt Lô</div><div class="k-val ${haoC}">${haoPct}%</div><div class="k-unit">${haoKg} kg</div><div class="k-trend ${parseFloat(haoPct)>5?'dn':'up'}">${parseFloat(haoPct)>5?'⚠️ Vượt ngưỡng':'✅ Trong mức'}</div></div>
-    <div class="kcard c-${flag>0?'red':'green'}"><div class="k-lbl">🚨 Nghi Vấn </div><div class="k-val ${flag>0?'red':'green'}">${flag}</div><div class="k-unit">giao dịch</div><div class="k-trend ${flag>0?'dn':'up'}">${flag>0?'Kiểm tra ngay!':'✅ Bình thường'}</div></div>`;
+    <div class="kcard c-gold">
+      <div class="k-lbl">💰 Doanh Thu Hôm Nay</div>
+      <div class="k-val gold">${fm(rev)}</div>
+      <div class="k-unit">${todayTx.length} giao dịch</div>
+      <div class="k-trend up">⚖️ ${kgBan.toLocaleString('vi')} kg đã bán</div>
+    </div>
+    <div class="kcard c-blue" style="--c:var(--blue)">
+      <div class="k-lbl">📦 Tồn Kho Hiện Tại</div>
+      <div class="k-val" style="color:var(--blue)">${tonKho.toLocaleString('vi')}</div>
+      <div class="k-unit">kg còn trong kho</div>
+      <div class="k-trend ${tonKhoC==='red'?'dn':'up'}">${tongNhap.toLocaleString('vi')} kg nhập · ${tongBan.toLocaleString('vi')} kg bán</div>
+    </div>
+    <div class="kcard c-${haoC}">
+      <div class="k-lbl">🍂 Hao Hụt Thực Tế</div>
+      <div class="k-val ${haoC}">${haoPct}%</div>
+      <div class="k-unit">${tongHao.toLocaleString('vi')} kg đã hao hụt</div>
+      <div class="k-trend ${parseFloat(haoPct)>5?'dn':'up'}">${parseFloat(haoPct)>5?'⚠️ Vượt ngưỡng 5%':'✅ Trong mức cho phép'}</div>
+    </div>
+    <div class="kcard c-${flag>0?'red':'green'}">
+      <div class="k-lbl">🚨 Nghi Vấn Hôm Nay</div>
+      <div class="k-val ${flag>0?'red':'green'}">${flag}</div>
+      <div class="k-unit">giao dịch đáng ngờ</div>
+      <div class="k-trend ${flag>0?'dn':'up'}">${flag>0?'⛔ Kiểm tra ngay!':'✅ Bình thường'}</div>
+    </div>`;
 }
 
 // ═══════════════════════════════════════════════════════
@@ -610,7 +677,7 @@ function renderRev7(){
     return `<div class="brow">
       <span class="blbl" ${isMax?'style="color:var(--gold);font-weight:800"':''}>${l}</span>
       <div class="btrack"><div class="bfill" style="width:${Math.max(pct,vals[i]>0?5:0)}%;background:${color}">
-        <span>${vals[i]>0?fm(vals[i]):'—'}${isMax?' ★':''}</span></div></div></div>`;
+        <span>${vals[i]>0?fmShort(vals[i]):'—'}${isMax?' ★':''}</span></div></div></div>`;
   }).join('');
 }
 
@@ -627,7 +694,7 @@ function renderRecentTx(){
       <span class="txc-ico">${t.flag?'🚨':'✅'}</span>
       <div class="txc-body">
         <div class="txc-name">${t.khach}</div>
-        <div class="txc-det">${t.kg}kg · L${t.loai} · <span style="color:${t.flag?'var(--red)':'var(--muted)'};font-weight:${t.flag?'700':'400'}">${(t.gia/1000).toFixed(0)}k/kg${t.flag?' ⚠️':''}</span> · ${t.nv}</div>
+        <div class="txc-det">${t.kg.toLocaleString('vi')}kg · L${t.loai} · <span style="color:${t.flag?'var(--red)':'var(--muted)'};font-weight:${t.flag?'700':'400'}">${t.gia.toLocaleString('vi')}đ/kg${t.flag?' ⚠️':''}</span> · ${t.nv}</div>
       </div>
       <div class="txc-right"><div class="txc-amt ${t.flag?'red':''}">${fm(t.total)}</div><div class="txc-time">${t.time}</div></div>
     </div>`).join('');
@@ -753,39 +820,91 @@ function submitOrder(){
 
 function submitLoss(){
   const kg=parseFloat(document.getElementById('h-kg').value);
-  const loai=document.getElementById('h-loai').options[document.getElementById('h-loai').selectedIndex].text;
+  const loaiEl=document.getElementById('h-loai');
+  const loaiTxt=loaiEl.options[loaiEl.selectedIndex].text;
   const note=document.getElementById('h-note').value;
   if(!kg){ showToast('⚠️ Nhập số kg!','var(--orange)'); return; }
-  pushToSheet('HaoHut',{ThoiGian:nowStr(),LoHang:selLot?selLot.name:'—',LoaiPhieu:loai,SoKG:kg,LyDo:note||'—'});
-  showToast('✅ Đã ghi nhận & đồng bộ Sheets!');
-  document.getElementById('h-kg').value=''; document.getElementById('h-note').value='';
+  // Lưu vào localStorage hao hụt
+  const haoRows = JSON.parse(localStorage.getItem('vsr_haohut')||'[]');
+  haoRows.push({ts:Date.now(), date:today(), lot:selLot?selLot.name:'—', loai:loaiTxt, kg, note:note||'—'});
+  localStorage.setItem('vsr_haohut', JSON.stringify(haoRows));
+  // Gửi Sheets ngầm
+  pushToSheet('HaoHut',{ThoiGian:nowStr(),LoHang:selLot?selLot.name:'—',LoaiPhieu:loaiTxt,SoKG:kg,LyDo:note||'—'});
+  showToast('✅ Đã ghi nhận hao hụt!');
+  document.getElementById('h-kg').value='';
+  document.getElementById('h-note').value='';
+  renderKPI(); renderHaoHut();
 }
 
 // ═══════════════════════════════════════════════════════
 //  HAO HỤT
 // ═══════════════════════════════════════════════════════
 function renderHaoHut(){
-  const thr={t1:parseFloat(document.getElementById('thr1').value)||5, t2:parseFloat(document.getElementById('thr2').value)||5, t3:parseFloat(document.getElementById('thr3').value)||6};
-  // tính từ TRANSACTIONS
-  const kgBan={1:0,2:0,3:0}; const kgNhap={1:0,2:0,3:0};
-  TRANSACTIONS.forEach(t=>{ kgBan[t.loai]=(kgBan[t.loai]||0)+t.kg; });
-  LOTS.forEach(l=>{ [1,2,3].forEach(i=>{ kgNhap[i]+= l.kg/3; }); }); // rough split if not tracked per loai
-  const html=`<div class="ltable">
-    <div class="lthd"><div class="lthd-c">Loại</div><div class="lthd-c">Bán (kg)</div><div class="lthd-c">Ngưỡng</div><div class="lthd-c">Trạng thái</div></div>
-    ${[1,2,3].map(i=>{
-      const ban=kgBan[i]||0;
-      const thr_i=i===1?thr.t1:i===2?thr.t2:thr.t3;
-      const icon=i===1?'🥇':i===2?'🥈':'🥉';
-      return `<div class="lrow"><div><div class="lr-name">${icon} Loại ${i}</div></div>
-        <div class="lr-c">${ban.toLocaleString('vi')}</div>
-        <div class="lr-c">${thr_i}%</div>
-        <div class="lr-c"><span class="lpct ok">✅ OK</span></div></div>`;
-    }).join('')}
-    <div class="lrow" style="background:rgba(245,200,66,.05)"><div><div class="lr-name" style="color:var(--gold);font-weight:800">TỔNG</div></div>
-      <div class="lr-c" style="font-weight:700">${Object.values(kgBan).reduce((a,b)=>a+b,0).toLocaleString('vi')}</div>
-      <div class="lr-c">—</div><div class="lr-c">—</div></div>
-  </div>`;
-  document.getElementById('haohutTable').innerHTML=html;
+  const thr={t1:parseFloat(document.getElementById('thr1').value)||5,
+             t2:parseFloat(document.getElementById('thr2').value)||5,
+             t3:parseFloat(document.getElementById('thr3').value)||6};
+
+  // Tổng nhập từ lô
+  let tongNhap=0; LOTS.forEach(l=>{ tongNhap+=l.kg; });
+
+  // Hao hụt thực tế từ localStorage
+  const haoRows = JSON.parse(localStorage.getItem('vsr_haohut')||'[]');
+  const tongHao  = haoRows.reduce((s,h)=>s+(parseFloat(h.kg)||0),0);
+  const haoPct   = tongNhap>0?(tongHao/tongNhap*100).toFixed(1):'0.0';
+  const thrMax   = Math.min(thr.t1,thr.t2,thr.t3);
+  const haoC     = parseFloat(haoPct)>thrMax?'bad':'ok';
+
+  // Tồn kho từng lô
+  const tonRows = LOTS.map(l=>{
+    const con = Math.max(0, l.kg-(l.sold||0));
+    const conPct = l.kg>0?(con/l.kg*100).toFixed(0):0;
+    return `<div class="lrow">
+      <div><div class="lr-name">📦 ${l.name}</div><div class="lr-sub">${l.open?'🟢 Đang bán':'⬛ Đã xong'}</div></div>
+      <div class="lr-c">${l.kg.toLocaleString('vi')}</div>
+      <div class="lr-c" style="color:var(--green)">${(l.sold||0).toLocaleString('vi')}</div>
+      <div class="lr-c"><span class="lpct ${con<=0?'bad':con<50?'warn':'ok'}">${con.toLocaleString('vi')} kg</span></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('haohutTable').innerHTML=`
+    <!-- TỒN KHO -->
+    <div style="font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;color:var(--blue);margin-bottom:8px;">📦 Tồn Kho Từng Lô</div>
+    <div class="ltable" style="margin-bottom:16px;">
+      <div class="lthd">
+        <div class="lthd-c">Lô Hàng</div>
+        <div class="lthd-c">Nhập (kg)</div>
+        <div class="lthd-c">Đã Bán</div>
+        <div class="lthd-c">Còn Lại</div>
+      </div>
+      ${tonRows||'<div class="empty-msg">Chưa có lô hàng</div>'}
+    </div>
+
+    <!-- HAO HỤT -->
+    <div style="font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;color:var(--orange);margin-bottom:8px;">🍂 Hao Hụt Ghi Nhận</div>
+    <div class="ltable" style="margin-bottom:16px;">
+      <div class="lthd">
+        <div class="lthd-c">Lô</div>
+        <div class="lthd-c">Loại Phiếu</div>
+        <div class="lthd-c">KG</div>
+        <div class="lthd-c">Ngày</div>
+      </div>
+      ${haoRows.length===0
+        ? '<div class="empty-msg">Chưa có hao hụt nào được ghi nhận</div>'
+        : [...haoRows].reverse().slice(0,10).map(h=>`
+          <div class="lrow">
+            <div class="lr-name" style="font-size:12px">${h.lot||'—'}</div>
+            <div class="lr-c" style="font-size:11px">${h.loai||'—'}</div>
+            <div class="lr-c"><span class="lpct warn">${(h.kg||0).toLocaleString('vi')} kg</span></div>
+            <div class="lr-c" style="font-size:10px;color:var(--muted)">${h.date||'—'}</div>
+          </div>`).join('')
+      }
+      <div class="lrow" style="background:rgba(255,159,67,.08)">
+        <div><div class="lr-name" style="color:var(--orange);font-weight:800">TỔNG HAO HỤT</div></div>
+        <div class="lr-c"></div>
+        <div class="lr-c" style="font-weight:800;color:var(--orange)">${tongHao.toLocaleString('vi')} kg</div>
+        <div class="lr-c"><span class="lpct ${haoC}">${haoPct}%</span></div>
+      </div>
+    </div>`;
 }
 
 function saveThr(){
